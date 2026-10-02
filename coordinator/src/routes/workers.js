@@ -2,7 +2,8 @@
 
 const express          = require('express')
 const db               = require('../db')
-const { workerRegistry } = require('../grpc/coordinatorServer')
+const { workerRegistry } = require('../services/workerRegistry')
+const { inspectWorker } = require('../grpc/workerClient')
 
 const router = express.Router()
 
@@ -12,15 +13,22 @@ router.get('/', async (req, res) => {
     // Merge DB record with live in-memory status
     const dbResult = await db.query('SELECT * FROM workers ORDER BY registered_at')
 
-    const workers = dbResult.rows.map(w => {
+    const visibleRows = req.query.includeHistory === 'true'
+      ? dbResult.rows
+      : dbResult.rows.filter(worker => workerRegistry.has(worker.id))
+    const workers = await Promise.all(visibleRows.map(async w => {
       const live = workerRegistry.get(w.id)
+      const address = live ? `${live.address}:${live.port}` : null
+      const inspection = address ? await inspectWorker(address) : { alive: false, cache: null }
       return {
         ...w,
         liveStatus:    live?.status        || 'unknown',
         activeTasks:   live?.activeTasks   || 0,
-        lastHeartbeat: live?.lastHeartbeat || null
+        lastHeartbeat: live?.lastHeartbeat || null,
+        grpcAlive: inspection.alive,
+        cache: inspection.cache
       }
-    })
+    }))
 
     res.json(workers)
   } catch (err) {

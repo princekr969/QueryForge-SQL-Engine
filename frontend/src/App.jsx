@@ -5,6 +5,10 @@ import axios from 'axios'
 import DatasetUploader from './components/DatasetUploader'
 import SQLEditor       from './components/SQLEditor'
 import WorkerDashboard from './components/WorkerDashboard'
+import ApproximateWorkbench from './components/ApproximateWorkbench'
+import QueryAutopsy from './components/QueryAutopsy'
+import LearningLab from './components/LearningLab'
+import Walkthrough from './components/Walkthrough'
 import ResultsTable    from './components/ResultsTable'
 import { useQuery }    from './hooks/useQuery'
 import { useWebSocket } from './hooks/useWebSocket'
@@ -18,7 +22,7 @@ export default function App () {
   const [progress,        setProgress]        = useState(null)
   const [queryComplete,   setQueryComplete]   = useState(false)
   const [executionTimeMs, setExecutionTimeMs] = useState(null)
-  const [activeTab,       setActiveTab]       = useState('query') // 'query' | 'datasets'
+  const [activeTab,       setActiveTab]       = useState('query') // 'query' | 'approximate' | 'datasets'
 
   const { jobId, loading, error, submitQuery } = useQuery()
 
@@ -110,7 +114,9 @@ export default function App () {
         <nav className="flex items-center gap-1 bg-surface border border-border rounded-lg p-1">
           {[
             { id: 'query',    label: 'Query',    icon: '⌘' },
+            { id: 'approximate', label: 'Sketch Lab', icon: '±' },
             { id: 'datasets', label: 'Datasets', icon: '⊞' },
+            { id: 'learn', label: 'Systems Lab', icon: '⌁' },
           ].map(tab => (
             <button
               key={tab.id}
@@ -153,6 +159,10 @@ export default function App () {
               onDatasetUploaded={handleDatasetUploaded}
             />
           </div>
+        ) : activeTab === 'approximate' ? (
+          <ApproximateWorkbench datasets={datasets} />
+        ) : activeTab === 'learn' ? (
+          <LearningLab datasets={datasets} />
         ) : (
           /* ── Query view ─────────────────────────────────────── */
           <>
@@ -196,6 +206,8 @@ export default function App () {
               </div>
             )}
 
+            <QueryAutopsy jobId={jobId} complete={queryComplete} />
+
             {/* Empty state — no query run yet */}
             {!hasResults && !loading && !error && (
               <div className="flex flex-col items-center justify-center py-16 text-center animate-fade-in">
@@ -213,12 +225,13 @@ export default function App () {
           </>
         )}
       </main>
+      <Walkthrough />
 
       {/* ── Footer ─────────────────────────────────────────────── */}
       <footer className="relative z-10 flex items-center justify-between px-6 py-3 border-t border-border/40 text-[10px] text-ink-ghost">
         <span>QueryForge © 2026 · Prince Kumar</span>
-        <span className="hidden sm:block">Predicate pushdown · Partial aggregation · Fault recovery · Live streaming</span>
-        <span>v1.0.0</span>
+        <span className="hidden sm:block">MapReduce · Replayable lineage · Kafka windows · Measured evidence</span>
+        <span>v2.0.0-course</span>
       </footer>
     </div>
   )

@@ -20,21 +20,32 @@ const { initBuckets }                      = require('./services/partitioner')
 const { startCoordinatorGrpcServer,
         heartbeatCheckInterval }           = require('./grpc/coordinatorServer')
 const { attachWebSocketServer }            = require('./websocket/wsServer')
-const { startFaultMonitor }               = require('./services/faultMonitor')
 const db                                   = require('./db')
+const { recoverInterruptedJobs }           = require('./services/jobManager')
 
 const datasetsRouter = require('./routes/datasets')
 const queryRouter    = require('./routes/query')
 const workersRouter  = require('./routes/workers')
 const explainRouter  = require('./routes/explain')
+const chaosRouter    = require('./routes/chaos')
+const approximateRouter = require('./routes/approximate')
+const plansRouter = require('./routes/plans')
+const lineageRouter = require('./routes/lineage')
+const workloadsRouter = require('./routes/workloads')
+const streamsRouter = require('./routes/streams')
+const evidenceRouter = require('./routes/evidence')
+const { resumeStreams, shutdownStreaming } = require('./services/streamingEngine')
 
 const PORT = parseInt(process.env.PORT || '3000', 10)
+const coordinatorStartedAt = new Date()
 
 let grpcServer  = null
 let httpServer  = null
-let faultTimer  = null
 
 async function main () {
+  console.log('[Coordinator] Applying database migrations...')
+  await db.runMigrations()
+
   console.log('[Coordinator] Initialising MinIO buckets...')
   await initBuckets()
 
@@ -49,6 +60,13 @@ async function main () {
   app.use('/api/query',    queryRouter)
   app.use('/api/workers',  workersRouter)
   app.use('/api/explain',  explainRouter)
+  app.use('/api/chaos',    chaosRouter)
+  app.use('/api/approximate', approximateRouter)
+  app.use('/api/plans', plansRouter)
+  app.use('/api/lineage', lineageRouter)
+  app.use('/api/workloads', workloadsRouter)
+  app.use('/api/streams', streamsRouter)
+  app.use('/api/evidence', evidenceRouter)
   app.get('/api/health',   (req, res) => res.json({ status: 'ok', ts: Date.now() }))
 
   app.use((req, res) => res.status(404).json({ error: `Not found: ${req.method} ${req.path}` }))
@@ -60,19 +78,24 @@ async function main () {
   httpServer = http.createServer(app)
   attachWebSocketServer(httpServer)
 
-  faultTimer = startFaultMonitor()
-
   httpServer.listen(PORT, '0.0.0.0', () => {
     console.log(`[Coordinator] HTTP + WebSocket listening on port ${PORT}`)
   })
+
+  setTimeout(() => {
+    recoverInterruptedJobs(coordinatorStartedAt)
+      .then(count => { if (count > 0) console.log(`[Recovery] Replayed ${count} interrupted job(s)`) })
+      .catch(error => console.error('[Recovery] Failed to inspect interrupted jobs:', error.message))
+  }, Number(process.env.RECOVERY_DELAY_MS || 8000)).unref()
+  setTimeout(() => resumeStreams().catch(error => console.warn('[Streaming] Resume failed:', error.message)), 2000).unref()
 }
 
 // ── Graceful shutdown ─────────────────────────────────────────────────────────
 async function shutdown (signal) {
   console.log(`[Coordinator] ${signal} received — shutting down gracefully`)
 
-  if (faultTimer)            clearInterval(faultTimer)
   if (heartbeatCheckInterval) clearInterval(heartbeatCheckInterval)
+  await shutdownStreaming()
 
   if (httpServer) {
     await new Promise(resolve => httpServer.close(resolve))

@@ -1,0 +1,7 @@
+region,sales,units
+west,10,1
+west,20,2
+east,30,3
+east,40,4
+north,50,5
+north,,6

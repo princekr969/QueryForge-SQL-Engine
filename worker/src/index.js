@@ -2,6 +2,8 @@
 
 require('dotenv').config()
 
+const os = require('os')
+
 process.on('uncaughtException', (err) => {
   console.error(`[Worker] Uncaught exception:`, err)
   process.exit(1)
@@ -15,9 +17,18 @@ const { registerWithCoordinator } = require('./grpc/coordinatorClient')
 const { startWorkerGrpcServer }   = require('./grpc/workerServer')
 const { startHeartbeat }          = require('./heartbeat')
 
-const WORKER_ID   = process.env.WORKER_ID   || 'worker-unknown'
+function firstExternalIpv4 () {
+  for (const addresses of Object.values(os.networkInterfaces())) {
+    const match = addresses?.find(address => address.family === 'IPv4' && !address.internal)
+    if (match) return match.address
+  }
+  return os.hostname()
+}
+
+const WORKER_ID   = process.env.WORKER_ID   || `worker-${os.hostname().slice(0, 12)}`
 const WORKER_PORT = parseInt(process.env.WORKER_PORT || '50051', 10)
-const WORKER_HOST = WORKER_ID  // Docker Compose service name = hostname
+const WORKER_HOST = process.env.WORKER_ADDRESS || firstExternalIpv4()
+process.env.WORKER_ID = WORKER_ID
 
 let grpcServer       = null
 let heartbeatTimer   = null

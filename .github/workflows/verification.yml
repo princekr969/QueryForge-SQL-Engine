@@ -1,0 +1,52 @@
+name: QueryForge verification
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: dtolnay/rust-toolchain@stable
+      - run: npm ci
+        working-directory: coordinator
+      - run: npm ci
+        working-directory: worker
+      - run: node --test tests/*.test.js
+      - run: cargo test --locked
+        working-directory: worker-rust
+      - run: npm ci && npm run build
+        working-directory: frontend
+
+  distributed-failure-matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+        working-directory: benchmarks
+      - run: docker compose --profile scaling --profile streaming up -d --build --wait --scale worker-scale=5
+      - run: npm run verify-all
+        working-directory: benchmarks
+      - if: always()
+        run: docker compose logs > verification-compose.log
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-compose-log
+          path: verification-compose.log
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: queryforge-verification-report
+          path: benchmarks/artifacts/
+      - if: always()
+        run: docker compose down -v

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-01T00:00:00.000Z",
+  "verificationState": "focused-gates-passed",
+  "ablations": [
+    {
+      "id": "combiner",
+      "title": "MapReduce combiner",
+      "baseline": { "label": "combiner off", "value": 100, "unit": "% mapper output" },
+      "optimized": { "label": "combiner on", "value": 0.1161, "unit": "% mapper output" },
+      "improvement": "99.8839% fewer transfer bytes",
+      "invariant": "identical result checksum"
+    },
+    {
+      "id": "worker-cache",
+      "title": "Warm worker cache",
+      "baseline": { "label": "cold", "value": 130, "unit": "ms" },
+      "optimized": { "label": "warm", "value": 88, "unit": "ms" },
+      "improvement": "32.3% lower latency; 8 cache hits",
+      "invariant": "identical result checksum"
+    },
+    {
+      "id": "speculation",
+      "title": "Duration-aware speculation",
+      "baseline": { "label": "disabled", "value": 953, "unit": "ms p99" },
+      "optimized": { "label": "enabled", "value": 308, "unit": "ms p99" },
+      "improvement": "67.68% lower injected-straggler p99",
+      "invariant": "identical result checksum"
+    }
+  ],
+  "resilience": {
+    "workerCrash": "1 failed attempt; speculative replacement committed; checksum preserved",
+    "streamRestart": "600/600 accepted events, zero duplicate/lost events, exact revenue 7179"
+  }
+}

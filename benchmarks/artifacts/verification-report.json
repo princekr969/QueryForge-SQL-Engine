@@ -1,0 +1,835 @@
+{
+  "status": "passed",
+  "startedAt": "2026-10-01T13:55:55.927Z",
+  "completedAt": "2026-10-01T13:57:43.019Z",
+  "commit": "b8de8068669e3151bd4a30e39fd778ace2b08295",
+  "hardware": {
+    "platform": "linux",
+    "release": "6.14.0-37-generic",
+    "cpus": 12,
+    "memoryBytes": 16434610176
+  },
+  "engine": {
+    "node": "v24.5.0",
+    "coordinatorUrl": "http://localhost:13000"
+  },
+  "results": {
+    "differential": {
+      "status": "passed",
+      "reference": "DuckDB",
+      "seed": "0x51f15e",
+      "datasetRows": 300,
+      "queries": 100,
+      "durationMs": 5819,
+      "datasetId": "26a66e7a-bf95-4f5d-8f1c-062fc3867d44"
+    },
+    "storage": {
+      "status": "passed",
+      "datasetId": "0e901088-a2a5-41f5-88a5-89659618cb3e",
+      "rowCount": 100000,
+      "query": "SELECT id, amount FROM storage_ablation WHERE id > 99000 ORDER BY id ASC",
+      "csv": {
+        "format": "csv",
+        "repetitions": 5,
+        "p50Ms": 93,
+        "p95Ms": 115,
+        "medianScannedBytes": 2127952,
+        "medianSkippedBytes": 0,
+        "medianTransferredBytes": 26897,
+        "medianPeakTaskMemoryBytes": 393216,
+        "medianCpuTimeMicros": 205472,
+        "resultRows": 1000
+      },
+      "parquet": {
+        "format": "parquet",
+        "repetitions": 5,
+        "p50Ms": 44,
+        "p95Ms": 46,
+        "medianScannedBytes": 4633,
+        "medianSkippedBytes": 144430,
+        "medianTransferredBytes": 25636,
+        "medianPeakTaskMemoryBytes": 3014656,
+        "medianCpuTimeMicros": 59597,
+        "resultRows": 1000
+      },
+      "scannedByteReduction": 0.9978227892358474,
+      "memoryWorkload": {
+        "query": "SELECT SUM(amount) AS total, AVG(amount) AS average FROM storage_ablation",
+        "csv": {
+          "format": "csv",
+          "repetitions": 5,
+          "p50Ms": 111,
+          "p95Ms": 122,
+          "medianScannedBytes": 2127952,
+          "medianSkippedBytes": 0,
+          "medianTransferredBytes": 519,
+          "medianPeakTaskMemoryBytes": 17170432,
+          "medianCpuTimeMicros": 277851,
+          "resultRows": 1
+        },
+        "parquet": {
+          "format": "parquet",
+          "repetitions": 5,
+          "p50Ms": 39,
+          "p95Ms": 40,
+          "medianScannedBytes": 149063,
+          "medianSkippedBytes": 0,
+          "medianTransferredBytes": 468,
+          "medianPeakTaskMemoryBytes": 2883584,
+          "medianCpuTimeMicros": 51715,
+          "resultRows": 1
+        },
+        "peakTaskMemoryReduction": 0.83206106870229
+      },
+      "ablations": {
+        "storageAndVectorization": {
+          "legacyRowCsv": {
+            "format": "csv",
+            "repetitions": 5,
+            "p50Ms": 111,
+            "p95Ms": 122,
+            "medianScannedBytes": 2127952,
+            "medianSkippedBytes": 0,
+            "medianTransferredBytes": 519,
+            "medianPeakTaskMemoryBytes": 17170432,
+            "medianCpuTimeMicros": 277851,
+            "resultRows": 1
+          },
+          "vectorizedParquet": {
+            "format": "parquet",
+            "repetitions": 5,
+            "p50Ms": 39,
+            "p95Ms": 40,
+            "medianScannedBytes": 149063,
+            "medianSkippedBytes": 0,
+            "medianTransferredBytes": 468,
+            "medianPeakTaskMemoryBytes": 2883584,
+            "medianCpuTimeMicros": 51715,
+            "resultRows": 1
+          },
+          "note": "CSV uses the streamed row executor; Parquet uses vectorized DuckDB batches."
+        },
+        "pruning": {
+          "fullParquetBytes": 149063,
+          "scannedBytes": 4633,
+          "skippedBytes": 144430
+        },
+        "partialAggregation": {
+          "rawProjection": {
+            "format": "parquet",
+            "repetitions": 5,
+            "p50Ms": 99,
+            "p95Ms": 138,
+            "medianScannedBytes": 23038,
+            "medianSkippedBytes": 126025,
+            "medianTransferredBytes": 240868,
+            "medianPeakTaskMemoryBytes": 7733248,
+            "medianCpuTimeMicros": 92886,
+            "resultRows": 10000
+          },
+          "workerPartialAggregate": {
+            "format": "parquet",
+            "repetitions": 5,
+            "p50Ms": 43,
+            "p95Ms": 49,
+            "medianScannedBytes": 23038,
+            "medianSkippedBytes": 126025,
+            "medianTransferredBytes": 3266,
+            "medianPeakTaskMemoryBytes": 3014656,
+            "medianCpuTimeMicros": 57890,
+            "resultRows": 20
+          },
+          "transferReduction": 0.9864407061128917
+        }
+      }
+    },
+    "join": {
+      "status": "passed",
+      "strategies": [
+        "local"
+      ],
+      "queries": 3,
+      "ordersId": "a3b5e961-2074-474a-8240-c60c635513db",
+      "customersId": "b50f7fd5-1a40-4752-be64-256d274a39a4"
+    },
+    "approximation": {
+      "status": "passed",
+      "datasetId": "032ca830-cb75-4575-856c-65013319a69d",
+      "rows": 60000,
+      "distributions": {
+        "uniform": {
+          "operation": "approx_count_distinct",
+          "exact": 60000,
+          "estimate": 60651,
+          "observedRelativeError": 0.01085,
+          "configuredRelativeError": 0.01625,
+          "transferredBytes": 16524,
+          "rawPayloadEstimate": 1753010
+        },
+        "adversarial": {
+          "exact": 34006,
+          "estimate": 33611,
+          "observedRelativeError": 0.011615597247544551,
+          "configuredRelativeError": 0.01625
+        },
+        "percentile": {
+          "quantile": 0.95,
+          "exact": 45005,
+          "estimate": 44916,
+          "observedRankError": 0.0008508475141252303,
+          "configuredRankError": 0.1
+        },
+        "zipfian": {
+          "expected": [
+            "hot",
+            "warm",
+            "cool"
+          ],
+          "observed": [
+            {
+              "value": "hot",
+              "estimate": 30000
+            },
+            {
+              "value": "warm",
+              "estimate": 15000
+            },
+            {
+              "value": "cool",
+              "estimate": 7800
+            }
+          ]
+        }
+      },
+      "deterministicSample": {
+        "size": 64,
+        "repeatable": true
+      },
+      "runs": [
+        {
+          "runId": "930cc40f-a5ee-4e31-a2fb-066bdf8d423c",
+          "operation": "approx_count_distinct",
+          "stateBytes": 5508,
+          "transferredBytes": 16524,
+          "executionTimeMs": 130
+        },
+        {
+          "runId": "7c95e696-ff18-4498-a870-4cc6cd75d1f4",
+          "operation": "approx_count_distinct",
+          "stateBytes": 5508,
+          "transferredBytes": 16524,
+          "executionTimeMs": 109
+        },
+        {
+          "runId": "976654a2-0a7b-4f04-ab34-a02d01196c03",
+          "operation": "approx_percentile",
+          "stateBytes": 6715,
+          "transferredBytes": 19159,
+          "executionTimeMs": 39
+        },
+        {
+          "runId": "893c830c-2680-4464-a89e-3de9fb85895b",
+          "operation": "heavy_hitters",
+          "stateBytes": 21557,
+          "transferredBytes": 63813,
+          "executionTimeMs": 497
+        },
+        {
+          "runId": "d49f2374-cfc6-4147-8414-9a56d89136ff",
+          "operation": "sample",
+          "stateBytes": 3514,
+          "transferredBytes": 10542,
+          "executionTimeMs": 151
+        },
+        {
+          "runId": "4080c006-a67a-46d8-95fd-0f4b209682bc",
+          "operation": "sample",
+          "stateBytes": 3514,
+          "transferredBytes": 10542,
+          "executionTimeMs": 135
+        }
+      ]
+    },
+    "scaling": {
+      "status": "passed",
+      "seed": "deterministic modular TPC-H-derived generator",
+      "rows": 600000,
+      "datasetId": "58edd2e3-d654-46e0-96c2-438268ba460b",
+      "partitions": 8,
+      "provisionedWorkers": 8,
+      "warmupsPerPoint": 1,
+      "measuredRunsPerPoint": 5,
+      "results": [
+        {
+          "name": "TPC-H-derived Q1 grouped scan",
+          "sql": "SELECT return_flag, COUNT(*) AS lines, SUM(quantity) AS quantity, SUM(revenue) AS revenue, MIN(extended_price) AS min_price, MAX(extended_price) AS max_price FROM lineitem GROUP BY return_flag ORDER BY return_flag ASC",
+          "checksum": "cde972eabec3089c472fdfd1286cff9454a2cf75f8420ee98c5be3a663cff943",
+          "measurements": [
+            {
+              "workers": 1,
+              "repetitions": 5,
+              "p50Ms": 87,
+              "p95Ms": 96,
+              "medianScannedBytes": 3884202,
+              "medianTransferredBytes": 6640,
+              "medianPeakTaskMemoryBytes": 35606528,
+              "medianCpuTimeMicros": 1512244,
+              "workersUsed": 1,
+              "checksum": "cde972eabec3089c472fdfd1286cff9454a2cf75f8420ee98c5be3a663cff943",
+              "speedup": 1,
+              "parallelEfficiency": 1
+            },
+            {
+              "workers": 2,
+              "repetitions": 5,
+              "p50Ms": 74,
+              "p95Ms": 144,
+              "medianScannedBytes": 3884202,
+              "medianTransferredBytes": 6640,
+              "medianPeakTaskMemoryBytes": 18255872,
+              "medianCpuTimeMicros": 987508,
+              "workersUsed": 2,
+              "checksum": "cde972eabec3089c472fdfd1286cff9454a2cf75f8420ee98c5be3a663cff943",
+              "speedup": 1.1756756756756757,
+              "parallelEfficiency": 0.5878378378378378
+            },
+            {
+              "workers": 4,
+              "repetitions": 5,
+              "p50Ms": 65,
+              "p95Ms": 88,
+              "medianScannedBytes": 3884202,
+              "medianTransferredBytes": 6640,
+              "medianPeakTaskMemoryBytes": 8310784,
+              "medianCpuTimeMicros": 484765,
+              "workersUsed": 4,
+              "checksum": "cde972eabec3089c472fdfd1286cff9454a2cf75f8420ee98c5be3a663cff943",
+              "speedup": 1.3384615384615384,
+              "parallelEfficiency": 0.3346153846153846
+            },
+            {
+              "workers": 8,
+              "repetitions": 5,
+              "p50Ms": 61,
+              "p95Ms": 77,
+              "medianScannedBytes": 3884202,
+              "medianTransferredBytes": 6640,
+              "medianPeakTaskMemoryBytes": 4722688,
+              "medianCpuTimeMicros": 272578,
+              "workersUsed": 8,
+              "checksum": "cde972eabec3089c472fdfd1286cff9454a2cf75f8420ee98c5be3a663cff943",
+              "speedup": 1.4262295081967213,
+              "parallelEfficiency": 0.17827868852459017
+            }
+          ]
+        },
+        {
+          "name": "TPC-H-derived Q6 selective revenue",
+          "sql": "SELECT SUM(revenue) AS revenue FROM lineitem WHERE ship_day >= 2400 AND discount >= 5 AND discount <= 7 AND quantity < 24",
+          "checksum": "65fb6cfa610db6b54fe741617b78736bb6b9b94997405a7a141bdf6449b5d4c6",
+          "measurements": [
+            {
+              "workers": 1,
+              "repetitions": 5,
+              "p50Ms": 73,
+              "p95Ms": 98,
+              "medianScannedBytes": 3884202,
+              "medianTransferredBytes": 968,
+              "medianPeakTaskMemoryBytes": 8257536,
+              "medianCpuTimeMicros": 1222841,
+              "workersUsed": 1,
+              "checksum": "65fb6cfa610db6b54fe741617b78736bb6b9b94997405a7a141bdf6449b5d4c6",
+              "speedup": 1,
+              "parallelEfficiency": 1
+            },
+            {
+              "workers": 2,
+              "repetitions": 5,
+              "p50Ms": 72,
+              "p95Ms": 75,
+              "medianScannedBytes": 3884202,
+              "medianTransferredBytes": 968,
+              "medianPeakTaskMemoryBytes": 7471104,
+              "medianCpuTimeMicros": 839599,
+              "workersUsed": 2,
+              "checksum": "65fb6cfa610db6b54fe741617b78736bb6b9b94997405a7a141bdf6449b5d4c6",
+              "speedup": 1.0138888888888888,
+              "parallelEfficiency": 0.5069444444444444
+            },
+            {
+              "workers": 4,
+              "repetitions": 5,
+              "p50Ms": 61,
+              "p95Ms": 64,
+              "medianScannedBytes": 3884202,
+              "medianTransferredBytes": 968,
+              "medianPeakTaskMemoryBytes": 8359936,
+              "medianCpuTimeMicros": 412291,
+              "workersUsed": 4,
+              "checksum": "65fb6cfa610db6b54fe741617b78736bb6b9b94997405a7a141bdf6449b5d4c6",
+              "speedup": 1.1967213114754098,
+              "parallelEfficiency": 0.29918032786885246
+            },
+            {
+              "workers": 8,
+              "repetitions": 5,
+              "p50Ms": 56,
+              "p95Ms": 66,
+              "medianScannedBytes": 3884202,
+              "medianTransferredBytes": 968,
+              "medianPeakTaskMemoryBytes": 4427776,
+              "medianCpuTimeMicros": 227173,
+              "workersUsed": 8,
+              "checksum": "65fb6cfa610db6b54fe741617b78736bb6b9b94997405a7a141bdf6449b5d4c6",
+              "speedup": 1.3035714285714286,
+              "parallelEfficiency": 0.16294642857142858
+            }
+          ]
+        }
+      ]
+    },
+    "adaptiveSkew": {
+      "status": "passed",
+      "rows": 240000,
+      "hotBuildMultiplicity": 1024,
+      "partitions": 8,
+      "measuredRuns": 5,
+      "correctness": {
+        "generatedExactComparison": true,
+        "checksumInvariant": true
+      },
+      "skewed": {
+        "static": {
+          "p50Ms": 3748,
+          "p95Ms": 3865,
+          "medianCriticalTaskMs": 2397,
+          "medianTransferredBytes": 544613,
+          "checksum": "643abca73aca2f8e55976e9f0abd5a91fabcca002facd7a45956c31053521ce9",
+          "plan": {
+            "join": {
+              "type": "INNER",
+              "leftAlias": "o",
+              "leftColumn": "customer_id",
+              "rightAlias": "c",
+              "rightColumn": "id"
+            },
+            "limit": 0,
+            "tables": [
+              {
+                "name": "orders",
+                "alias": "o"
+              },
+              {
+                "name": "customers",
+                "alias": "c"
+              }
+            ],
+            "shuffle": {
+              "buckets": 8,
+              "bloomBytes": 43744,
+              "hotBuckets": [],
+              "bytesWritten": 539553,
+              "executionTimeMs": 1225,
+              "logicalPartitions": 8
+            },
+            "tableName": "orders",
+            "workerSql": "SELECT \"c\".\"region\" AS \"region\", COUNT(*) AS \"__rows\", COUNT(*) AS \"__c0\", SUM(\"o\".\"amount\") AS \"__v1\", COUNT(\"o\".\"amount\") AS \"__c1\" FROM \"o\" INNER JOIN \"c\" ON \"o\".\"customer_id\" = \"c\".\"id\" GROUP BY \"c\".\"region\"",
+            "predicates": [],
+            "orderByType": "string",
+            "aggregations": [
+              {
+                "alias": "orders",
+                "column": "*",
+                "function": "COUNT"
+              },
+              {
+                "alias": "total",
+                "column": "amount",
+                "function": "SUM"
+              }
+            ],
+            "joinStrategy": "hash_shuffle",
+            "orderByColumn": "region",
+            "selectColumns": [
+              "region"
+            ],
+            "groupByColumns": [
+              "region"
+            ],
+            "runtimeFeedback": {
+              "executions": 5,
+              "emaResultRows": 4,
+              "hotBucketCount": 0,
+              "emaStragglerRatio": 27.667453406775874,
+              "recommendedShuffleBuckets": 8
+            },
+            "columnReferences": [
+              {
+                "table": "c",
+                "column": "region"
+              }
+            ],
+            "orderByDirection": "ASC",
+            "outputReferences": [
+              {
+                "alias": "region",
+                "table": "c",
+                "column": "region"
+              }
+            ],
+            "joinStrategyReason": "explicit experiment override (hash_shuffle)",
+            "aggregateReferences": [
+              {
+                "table": "o",
+                "column": "amount",
+                "function": "SUM"
+              }
+            ],
+            "estimatedBuildBytes": 5226,
+            "estimatedProbeBytes": 718861
+          }
+        },
+        "adaptive": {
+          "p50Ms": 3116,
+          "p95Ms": 3422,
+          "medianCriticalTaskMs": 1576,
+          "medianTransferredBytes": 549023,
+          "checksum": "643abca73aca2f8e55976e9f0abd5a91fabcca002facd7a45956c31053521ce9",
+          "plan": {
+            "join": {
+              "type": "INNER",
+              "leftAlias": "o",
+              "leftColumn": "customer_id",
+              "rightAlias": "c",
+              "rightColumn": "id"
+            },
+            "limit": 0,
+            "tables": [
+              {
+                "name": "orders",
+                "alias": "o"
+              },
+              {
+                "name": "customers",
+                "alias": "c"
+              }
+            ],
+            "shuffle": {
+              "buckets": 8,
+              "bloomBytes": 43744,
+              "hotBuckets": [
+                {
+                  "rows": 196080,
+                  "bucket": 0,
+                  "splits": 8
+                }
+              ],
+              "bytesWritten": 539553,
+              "executionTimeMs": 1407,
+              "logicalPartitions": 15
+            },
+            "tableName": "orders",
+            "workerSql": "SELECT \"c\".\"region\" AS \"region\", COUNT(*) AS \"__rows\", COUNT(*) AS \"__c0\", SUM(\"o\".\"amount\") AS \"__v1\", COUNT(\"o\".\"amount\") AS \"__c1\" FROM \"o\" INNER JOIN \"c\" ON \"o\".\"customer_id\" = \"c\".\"id\" GROUP BY \"c\".\"region\"",
+            "predicates": [],
+            "orderByType": "string",
+            "aggregations": [
+              {
+                "alias": "orders",
+                "column": "*",
+                "function": "COUNT"
+              },
+              {
+                "alias": "total",
+                "column": "amount",
+                "function": "SUM"
+              }
+            ],
+            "joinStrategy": "hash_shuffle",
+            "orderByColumn": "region",
+            "selectColumns": [
+              "region"
+            ],
+            "groupByColumns": [
+              "region"
+            ],
+            "runtimeFeedback": {
+              "executions": 11,
+              "emaResultRows": 4,
+              "hotBucketCount": 1,
+              "emaStragglerRatio": 5.986459699931687,
+              "recommendedShuffleBuckets": 8
+            },
+            "columnReferences": [
+              {
+                "table": "c",
+                "column": "region"
+              }
+            ],
+            "orderByDirection": "ASC",
+            "outputReferences": [
+              {
+                "alias": "region",
+                "table": "c",
+                "column": "region"
+              }
+            ],
+            "joinStrategyReason": "explicit experiment override (hash_shuffle)",
+            "aggregateReferences": [
+              {
+                "table": "o",
+                "column": "amount",
+                "function": "SUM"
+              }
+            ],
+            "estimatedBuildBytes": 5226,
+            "estimatedProbeBytes": 718861
+          }
+        }
+      },
+      "balanced": {
+        "allowedRegression": 0.25,
+        "static": {
+          "p50Ms": 1569,
+          "p95Ms": 1658,
+          "medianCriticalTaskMs": 107,
+          "medianTransferredBytes": 588943,
+          "checksum": "bb84dfe72bfc678d5c71725469a4a4153d7fe4bc3bf7486fd4ff346d8de121f8",
+          "plan": {
+            "join": {
+              "type": "INNER",
+              "leftAlias": "o",
+              "leftColumn": "customer_id",
+              "rightAlias": "c",
+              "rightColumn": "id"
+            },
+            "limit": 0,
+            "tables": [
+              {
+                "name": "orders",
+                "alias": "o"
+              },
+              {
+                "name": "customers",
+                "alias": "c"
+              }
+            ],
+            "shuffle": {
+              "buckets": 8,
+              "bloomBytes": 43744,
+              "hotBuckets": [],
+              "bytesWritten": 583844,
+              "executionTimeMs": 1491,
+              "logicalPartitions": 8
+            },
+            "tableName": "orders",
+            "workerSql": "SELECT \"c\".\"region\" AS \"region\", COUNT(*) AS \"__rows\", COUNT(*) AS \"__c0\", SUM(\"o\".\"amount\") AS \"__v1\", COUNT(\"o\".\"amount\") AS \"__c1\" FROM \"o\" INNER JOIN \"c\" ON \"o\".\"customer_id\" = \"c\".\"id\" GROUP BY \"c\".\"region\"",
+            "predicates": [],
+            "orderByType": "string",
+            "aggregations": [
+              {
+                "alias": "orders",
+                "column": "*",
+                "function": "COUNT"
+              },
+              {
+                "alias": "total",
+                "column": "amount",
+                "function": "SUM"
+              }
+            ],
+            "joinStrategy": "hash_shuffle",
+            "orderByColumn": "region",
+            "selectColumns": [
+              "region"
+            ],
+            "groupByColumns": [
+              "region"
+            ],
+            "runtimeFeedback": {
+              "executions": 5,
+              "emaResultRows": 4,
+              "hotBucketCount": 0,
+              "emaStragglerRatio": 1.1273327210202972,
+              "recommendedShuffleBuckets": 8
+            },
+            "columnReferences": [
+              {
+                "table": "c",
+                "column": "region"
+              }
+            ],
+            "orderByDirection": "ASC",
+            "outputReferences": [
+              {
+                "alias": "region",
+                "table": "c",
+                "column": "region"
+              }
+            ],
+            "joinStrategyReason": "explicit experiment override (hash_shuffle)",
+            "aggregateReferences": [
+              {
+                "table": "o",
+                "column": "amount",
+                "function": "SUM"
+              }
+            ],
+            "estimatedBuildBytes": 5226,
+            "estimatedProbeBytes": 808253
+          }
+        },
+        "adaptive": {
+          "p50Ms": 1569,
+          "p95Ms": 1740,
+          "medianCriticalTaskMs": 98,
+          "medianTransferredBytes": 588943,
+          "checksum": "bb84dfe72bfc678d5c71725469a4a4153d7fe4bc3bf7486fd4ff346d8de121f8",
+          "plan": {
+            "join": {
+              "type": "INNER",
+              "leftAlias": "o",
+              "leftColumn": "customer_id",
+              "rightAlias": "c",
+              "rightColumn": "id"
+            },
+            "limit": 0,
+            "tables": [
+              {
+                "name": "orders",
+                "alias": "o"
+              },
+              {
+                "name": "customers",
+                "alias": "c"
+              }
+            ],
+            "shuffle": {
+              "buckets": 8,
+              "bloomBytes": 43744,
+              "hotBuckets": [],
+              "bytesWritten": 583844,
+              "executionTimeMs": 1625,
+              "logicalPartitions": 8
+            },
+            "tableName": "orders",
+            "workerSql": "SELECT \"c\".\"region\" AS \"region\", COUNT(*) AS \"__rows\", COUNT(*) AS \"__c0\", SUM(\"o\".\"amount\") AS \"__v1\", COUNT(\"o\".\"amount\") AS \"__c1\" FROM \"o\" INNER JOIN \"c\" ON \"o\".\"customer_id\" = \"c\".\"id\" GROUP BY \"c\".\"region\"",
+            "predicates": [],
+            "orderByType": "string",
+            "aggregations": [
+              {
+                "alias": "orders",
+                "column": "*",
+                "function": "COUNT"
+              },
+              {
+                "alias": "total",
+                "column": "amount",
+                "function": "SUM"
+              }
+            ],
+            "joinStrategy": "hash_shuffle",
+            "orderByColumn": "region",
+            "selectColumns": [
+              "region"
+            ],
+            "groupByColumns": [
+              "region"
+            ],
+            "runtimeFeedback": {
+              "executions": 11,
+              "emaResultRows": 4,
+              "hotBucketCount": 0,
+              "emaStragglerRatio": 1.0907801759297837,
+              "recommendedShuffleBuckets": 8
+            },
+            "columnReferences": [
+              {
+                "table": "c",
+                "column": "region"
+              }
+            ],
+            "orderByDirection": "ASC",
+            "outputReferences": [
+              {
+                "alias": "region",
+                "table": "c",
+                "column": "region"
+              }
+            ],
+            "joinStrategyReason": "explicit experiment override (hash_shuffle)",
+            "aggregateReferences": [
+              {
+                "table": "o",
+                "column": "amount",
+                "function": "SUM"
+              }
+            ],
+            "estimatedBuildBytes": 5226,
+            "estimatedProbeBytes": 808253
+          }
+        }
+      }
+    },
+    "chaos": {
+      "status": "passed",
+      "baselineChecksum": "d46abbd4e4f640721d5eed677f788241abf1f6f7b574b188a9590de80f2a9a55",
+      "matrix": [
+        {
+          "mode": "network_loss",
+          "status": "completed",
+          "checksumPreserved": true,
+          "attempts": 4,
+          "failedAttempts": 1,
+          "speculativeAttempts": 1
+        },
+        {
+          "mode": "corrupted_input",
+          "status": "completed",
+          "checksumPreserved": true,
+          "attempts": 4,
+          "failedAttempts": 1,
+          "speculativeAttempts": 1
+        },
+        {
+          "mode": "delay",
+          "status": "completed",
+          "checksumPreserved": true,
+          "attempts": 4,
+          "failedAttempts": 1,
+          "speculativeAttempts": 1
+        },
+        {
+          "mode": "duplicate",
+          "status": "completed",
+          "checksumPreserved": true,
+          "attempts": 4,
+          "failedAttempts": 1,
+          "speculativeAttempts": 1
+        },
+        {
+          "mode": "skew",
+          "status": "completed",
+          "checksumPreserved": true,
+          "attempts": 4,
+          "failedAttempts": 1,
+          "speculativeAttempts": 1
+        }
+      ]
+    },
+    "workerCrash": {
+      "status": "passed",
+      "crashedWorker": "worker-1",
+      "baselineChecksum": "d46abbd4e4f640721d5eed677f788241abf1f6f7b574b188a9590de80f2a9a55",
+      "recoveredChecksum": "d46abbd4e4f640721d5eed677f788241abf1f6f7b574b188a9590de80f2a9a55",
+      "failedAttempts": 1,
+      "totalAttempts": 4
+    },
+    "coordinatorRestart": {
+      "status": "passed",
+      "jobId": "423b437b-891a-49b2-b13f-3487ab36fa2f",
+      "checksum": "d916efcaafb0176a3ec8de3d7c34357ae5c9f97818f200725bed0b35d6faec64",
+      "abandonedAttempts": 6,
+      "totalAttempts": 9
+    }
+  }
+}

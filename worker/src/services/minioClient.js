@@ -9,14 +9,17 @@
 
 const fs   = require('fs')
 const path = require('path')
-const { Client } = require('minio')
+const { pipeline } = require('stream/promises')
+const { S3Client, GetObjectCommand, PutObjectCommand } = require('@aws-sdk/client-s3')
 
-const minioClient = new Client({
-  endPoint:  process.env.MINIO_ENDPOINT || 'minio',
-  port:      parseInt(process.env.MINIO_PORT || '9000', 10),
-  useSSL:    false,
-  accessKey: process.env.MINIO_ACCESS_KEY || 'minioadmin',
-  secretKey: process.env.MINIO_SECRET_KEY || 'minioadmin'
+const s3Client = new S3Client({
+  endpoint: `http://${process.env.MINIO_ENDPOINT || 'minio'}:${process.env.MINIO_PORT || '9000'}`,
+  region: 'us-east-1',
+  forcePathStyle: true,
+  credentials: {
+    accessKeyId: process.env.MINIO_ACCESS_KEY || 'minioadmin',
+    secretAccessKey: process.env.MINIO_SECRET_KEY || 'minioadmin'
+  }
 })
 
 const PARTITIONS_BUCKET = 'partitions'
@@ -29,26 +32,32 @@ const PARTITIONS_BUCKET = 'partitions'
  * @param {string} taskId      - used to create a unique temp filename
  * @returns {Promise<string>}  - absolute path to the downloaded temp file
  */
-async function downloadPartitionToFile (objectPath, taskId) {
-  const localPath = path.join('/tmp', `${taskId}.csv`)
+async function downloadPartitionToFile (objectPath, taskId, extension = 'csv') {
+  const localPath = path.join('/tmp', `${taskId}.${extension}`)
 
-  const stream = await minioClient.getObject(PARTITIONS_BUCKET, objectPath)
+  try {
+    const response = await s3Client.send(new GetObjectCommand({
+      Bucket: PARTITIONS_BUCKET,
+      Key: objectPath
+    }))
+    await pipeline(response.Body, fs.createWriteStream(localPath))
+    return localPath
+  } catch (err) {
+    fs.unlink(localPath, () => {})
+    throw err
+  }
+}
 
-  return new Promise((resolve, reject) => {
-    const fileStream = fs.createWriteStream(localPath)
-
-    stream.pipe(fileStream)
-    fileStream.on('finish', () => resolve(localPath))
-    fileStream.on('error', (err) => {
-      // Clean up partial file on write error
-      fs.unlink(localPath, () => {})
-      reject(err)
-    })
-    stream.on('error', (err) => {
-      fs.unlink(localPath, () => {})
-      reject(err)
-    })
-  })
+async function uploadPartitionFile (objectPath, localPath, contentType = 'application/vnd.apache.parquet') {
+  const stat = await fs.promises.stat(localPath)
+  await s3Client.send(new PutObjectCommand({
+    Bucket: PARTITIONS_BUCKET,
+    Key: objectPath,
+    Body: fs.createReadStream(localPath),
+    ContentLength: stat.size,
+    ContentType: contentType
+  }))
+  return stat.size
 }
 
 /**
@@ -62,4 +71,4 @@ function cleanupTempFile (localPath) {
   })
 }
 
-module.exports = { downloadPartitionToFile, cleanupTempFile }
+module.exports = { downloadPartitionToFile, uploadPartitionFile, cleanupTempFile }

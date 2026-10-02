@@ -10,6 +10,7 @@
 const { mergeResults } = require('../coordinator/src/services/resultMerger')
 const assert = require('node:assert/strict')
 const { describe, it } = require('node:test')
+const { tableFromArrays, tableToIPC } = require('../coordinator/node_modules/apache-arrow')
 
 describe('resultMerger — plain row merging', () => {
   it('merges rows from multiple workers into a single result set', () => {
@@ -37,6 +38,18 @@ describe('resultMerger — plain row merging', () => {
     assert.equal(result[2].name, 'Charlie')
   })
 
+  it('decodes Arrow IPC batches from columnar workers', () => {
+    const arrowIpc = Buffer.from(tableToIPC(tableFromArrays({
+      name: ['Alice', 'Bob'],
+      salary: ['60000', '70000']
+    }), 'stream'))
+    const plan = { aggregations: [], orderByColumn: '', orderByDirection: 'ASC', limit: 0 }
+    assert.deepEqual(mergeResults([{ is_aggregated: false, arrow_ipc: arrowIpc }], plan), [
+      { name: 'Alice', salary: '60000' },
+      { name: 'Bob', salary: '70000' }
+    ])
+  })
+
   it('applies LIMIT correctly', () => {
     const partialResults = [
       {
@@ -50,6 +63,16 @@ describe('resultMerger — plain row merging', () => {
     assert.equal(result.length, 2)
   })
 
+  it('uses catalog type for deterministic string ordering', () => {
+    const partialResults = [{
+      is_aggregated: false,
+      column_names: ['code'],
+      rows: [{ values: ['10'] }, { values: ['2'] }]
+    }]
+    const plan = { aggregations: [], orderByColumn: 'code', orderByDirection: 'ASC', orderByType: 'string', limit: 0 }
+    assert.deepEqual(mergeResults(partialResults, plan).map(row => row.code), ['10', '2'])
+  })
+
   it('returns empty array when no partial results', () => {
     const result = mergeResults([], { aggregations: [], orderByColumn: '', limit: 0 })
     assert.deepEqual(result, [])
@@ -57,6 +80,43 @@ describe('resultMerger — plain row merging', () => {
 })
 
 describe('resultMerger — aggregated merging (MapReduce)', () => {
+  it('merges alias-keyed SUM and AVG independently with null-aware counts', () => {
+    const partialResults = [
+      {
+        is_aggregated: true,
+        groups: [{ group_key: '[]', count: 3, sums: { sales: 30 }, values: { sum_sales: 30, avg_sales: 30 }, counts: { sum_sales: 2, avg_sales: 2 }, group_values: {} }]
+      },
+      {
+        is_aggregated: true,
+        groups: [{ group_key: '[]', count: 2, sums: { sales: 70 }, values: { sum_sales: 70, avg_sales: 70 }, counts: { sum_sales: 2, avg_sales: 2 }, group_values: {} }]
+      }
+    ]
+    const plan = {
+      aggregations: [
+        { function: 'SUM', column: 'sales', alias: 'sum_sales' },
+        { function: 'AVG', column: 'sales', alias: 'avg_sales' }
+      ],
+      orderByColumn: '', orderByDirection: 'ASC', limit: 0
+    }
+    assert.deepEqual(mergeResults(partialResults, plan), [{ sum_sales: 100, avg_sales: 25 }])
+  })
+
+  it('returns COUNT 0 and null for other aggregates on empty global input', () => {
+    const partialResults = [{
+      is_aggregated: true,
+      groups: [{ group_key: '[]', count: 0, sums: {}, values: {}, counts: {}, group_values: {} }]
+    }]
+    const plan = {
+      aggregations: [
+        { function: 'COUNT', column: '*', alias: 'n' },
+        { function: 'SUM', column: 'sales', alias: 'sum_sales' },
+        { function: 'AVG', column: 'sales', alias: 'avg_sales' }
+      ],
+      orderByColumn: '', orderByDirection: 'ASC', limit: 0
+    }
+    assert.deepEqual(mergeResults(partialResults, plan), [{ n: 0, sum_sales: null, avg_sales: null }])
+  })
+
   it('correctly merges COUNT from multiple workers', () => {
     const partialResults = [
       {

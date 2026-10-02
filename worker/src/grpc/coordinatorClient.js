@@ -7,7 +7,7 @@ const path        = require('path')
 const PROTO_PATH = process.env.PROTO_PATH ||
   (require('fs').existsSync('/proto/dataforge.proto')
     ? '/proto/dataforge.proto'
-    : path.join(__dirname, '../../../../proto/dataforge.proto'))
+    : path.join(__dirname, '../../../proto/dataforge.proto'))
 
 const packageDef = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
@@ -41,7 +41,7 @@ async function registerWithCoordinator (workerId, address, port, retries = 10, d
     try {
       await new Promise((resolve, reject) => {
         getStub().Register(
-          { worker_id: workerId, address, port },
+          { worker_id: workerId, address, port, capabilities: ['scan', 'aggregate', 'join', 'shuffle', 'sketch', 'stream'] },
           { deadline: Date.now() + 5000 },
           (err, response) => {
             if (err) return reject(err)

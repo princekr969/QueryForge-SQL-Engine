@@ -2,7 +2,7 @@ services:
 
   # ── PostgreSQL ──────────────────────────────────────────────────────────────
   postgres:
-    image: postgres:15
+    image: postgres:15@sha256:724292da1f2e50bdccfc3302ce75bbba7f4a6076701b588cc795fcac65683550
     environment:
       POSTGRES_DB: dataforge
       POSTGRES_USER: postgres
@@ -16,20 +16,20 @@ services:
       timeout: 5s
       retries: 10
 
-  # ── MinIO ───────────────────────────────────────────────────────────────────
+  # ── S3-compatible object storage ────────────────────────────────────────────
   minio:
-    image: minio/minio
-    command: server /data --console-address ":9001"
+    image: chrislusf/seaweedfs:4.48
+    command: server -dir=/data -s3 -s3.port=9000 -ip.bind=0.0.0.0 -volume.max=100 -master.volumeSizeLimitMB=128
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "${S3_PORT:-9000}:9000"
+      - "${S3_ADMIN_PORT:-9001}:9333"
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      AWS_ACCESS_KEY_ID: minioadmin
+      AWS_SECRET_ACCESS_KEY: minioadmin
     volumes:
       - minio_data:/data
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ["CMD-SHELL", "wget --spider http://localhost:9000 2>&1 | grep -q '403 Forbidden'"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -40,8 +40,8 @@ services:
       context: .
       dockerfile: coordinator/Dockerfile
     ports:
-      - "3000:3000"    # REST API + WebSocket
-      - "50050:50050"  # gRPC CoordinatorService (workers call in)
+      - "${COORDINATOR_HTTP_PORT:-3000}:3000"    # REST API + WebSocket
+      - "${COORDINATOR_GRPC_PORT:-50050}:50050"  # gRPC CoordinatorService (workers call in)
     environment:
       DATABASE_URL: postgresql://postgres:password@postgres:5432/dataforge
       MINIO_ENDPOINT: minio
@@ -50,6 +50,10 @@ services:
       MINIO_SECRET_KEY: minioadmin
       WORKER_ADDRESSES: worker-1:50051,worker-2:50051,worker-3:50051
       OTEL_SERVICE_NAME: coordinator
+      INGEST_MEMORY_LIMIT: 256MB
+      LOCAL_JOIN_MAX_BYTES: "${LOCAL_JOIN_MAX_BYTES:-2097152}"
+      BROADCAST_JOIN_MAX_BYTES: "${BROADCAST_JOIN_MAX_BYTES:-16777216}"
+      KAFKA_BROKERS: "${KAFKA_BROKERS:-redpanda:9092}"
     depends_on:
       postgres:
         condition: service_healthy
@@ -59,6 +63,7 @@ services:
 
   # ── Worker 1 ────────────────────────────────────────────────────────────────
   worker-1:
+    image: queryforge-worker:local
     build:
       context: .
       dockerfile: worker/Dockerfile
@@ -71,12 +76,14 @@ services:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
       OTEL_SERVICE_NAME: worker-1
+      WORKER_MEMORY_LIMIT: 256MB
     depends_on:
       - coordinator
     restart: on-failure
 
   # ── Worker 2 ────────────────────────────────────────────────────────────────
   worker-2:
+    image: queryforge-worker:local
     build:
       context: .
       dockerfile: worker/Dockerfile
@@ -89,12 +96,14 @@ services:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
       OTEL_SERVICE_NAME: worker-2
+      WORKER_MEMORY_LIMIT: 256MB
     depends_on:
       - coordinator
     restart: on-failure
 
   # ── Worker 3 ────────────────────────────────────────────────────────────────
   worker-3:
+    image: queryforge-worker:local
     build:
       context: .
       dockerfile: worker/Dockerfile
@@ -107,9 +116,75 @@ services:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
       OTEL_SERVICE_NAME: worker-3
+      WORKER_MEMORY_LIMIT: 256MB
     depends_on:
       - coordinator
     restart: on-failure
+
+  # Elastic pool used only by repeatable scaling experiments. Each replica
+  # self-registers with a unique hostname-derived ID and routable container IP.
+  worker-scale:
+    profiles: ["scaling"]
+    image: queryforge-worker:local
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    environment:
+      WORKER_PORT: "50051"
+      COORDINATOR_ADDRESS: coordinator:50050
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: "9000"
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      OTEL_SERVICE_NAME: worker-scale
+      WORKER_MEMORY_LIMIT: 256MB
+    depends_on:
+      - coordinator
+    restart: on-failure
+
+  # Rust/DataFusion worker using the same gRPC contract as the Node workers.
+  # Enable with: docker compose --profile datafusion up -d worker-rust
+  worker-rust:
+    profiles: ["datafusion"]
+    build:
+      context: .
+      dockerfile: worker-rust/Dockerfile
+    environment:
+      WORKER_ID: worker-rust
+      WORKER_ADDRESS: worker-rust
+      WORKER_PORT: "50051"
+      COORDINATOR_ADDRESS: coordinator:50050
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: "9000"
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      WORKER_MEMORY_LIMIT: 256MB
+    depends_on:
+      - coordinator
+    restart: on-failure
+
+  # Kafka-compatible event log for standing streaming queries.
+  redpanda:
+    profiles: ["streaming"]
+    image: redpandadata/redpanda:v24.2.18
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp=1
+      - --memory=512M
+      - --reserve-memory=0M
+      - --node-id=0
+      - --check=false
+      - --kafka-addr=internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr=internal://redpanda:9092,external://localhost:19092
+    ports:
+      - "${KAFKA_PORT:-19092}:19092"
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -q 'Healthy:.*true'"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
 
   # ── Frontend ─────────────────────────────────────────────────────────────────
   frontend:
@@ -117,7 +192,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "5173:5173"
+      - "${FRONTEND_PORT:-5173}:5173"
     environment:
       VITE_COORDINATOR_URL: http://localhost:3000
       VITE_WS_URL: ws://localhost:3000
@@ -126,17 +201,17 @@ services:
 
   # ── Prometheus ───────────────────────────────────────────────────────────────
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v2.54.1@sha256:f6639335d34a77d9d9db382b92eeb7fc00934be8eae81dbc03b31cfe90411a94
     ports:
-      - "9090:9090"
+      - "${PROMETHEUS_PORT:-9090}:9090"
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
 
   # ── Grafana ──────────────────────────────────────────────────────────────────
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:11.2.2@sha256:d5133220d770aba5cb655147b619fa8770b90f41d8489a821d33b1cd34d16f89
     ports:
-      - "3001:3000"
+      - "${GRAFANA_PORT:-3001}:3000"
     environment:
       GF_SECURITY_ADMIN_PASSWORD: admin
       GF_PATHS_PROVISIONING: /etc/grafana/provisioning

@@ -96,7 +96,7 @@ export default function WorkerDashboard ({ progress, active }) {
 
       {/* Footer */}
       <div className="px-4 py-2.5 border-t border-border/50 flex items-center justify-between">
-        <span className="text-[10px] text-ink-ghost">3 nodes · gRPC</span>
+        <span className="text-[10px] text-ink-ghost">{displayWorkers.length} nodes · gRPC</span>
         <span className="text-[10px] text-ink-ghost">heartbeat 5s</span>
       </div>
     </div>
@@ -104,7 +104,9 @@ export default function WorkerDashboard ({ progress, active }) {
 }
 
 function WorkerCard ({ worker }) {
-  const status = worker.liveStatus || 'unknown'
+  const status = worker.activeTasks > 0
+    ? 'processing'
+    : worker.liveStatus === 'active' ? 'idle' : (worker.liveStatus || 'unknown')
   const cfg    = STATUS_CONFIG[status] || STATUS_CONFIG.unknown
 
   return (

@@ -8,8 +8,23 @@ service WorkerService {
   // Assign a partition task; worker streams partial results back
   rpc ExecuteTask(TaskRequest) returns (stream PartialResult);
 
+  // Validate and assign a bounded Kafka micro-partition to event-time windows.
+  rpc ProcessStreamBatch(StreamBatchRequest) returns (StreamBatchResponse);
+
   // Health probe from coordinator
   rpc Ping(PingRequest) returns (PingResponse);
+}
+
+message StreamBatchRequest {
+  string batch_id = 1;
+  string config_json = 2;
+  string events_json = 3;
+}
+
+message StreamBatchResponse {
+  string batch_id = 1;
+  string records_json = 2;
+  int32 event_count = 3;
 }
 
 // ─── Coordinator Service ─────────────────────────────────────────────────────
@@ -34,6 +49,21 @@ message TaskRequest {
   string order_by_column    = 8;
   string order_by_direction = 9;  // "ASC" | "DESC"
   int32  limit              = 10; // 0 = no limit
+  string storage_format     = 11; // "csv" | "parquet"
+  int64  partition_row_count = 12;
+  int64  partition_byte_size = 13;
+  string partition_stats_json = 14;
+  repeated string secondary_partition_paths = 15;
+  string primary_table_alias = 16;
+  string secondary_table_alias = 17;
+  string execution_sql = 18;
+  string join_strategy = 19;
+  string sketch_spec_json = 20;
+  repeated string primary_partition_paths = 21;
+  string shuffle_spec_json = 22;
+  bool disable_combiner = 23; // emit one mergeable aggregate state per input row
+  string cache_level = 24; // NONE | MEMORY | DISK | MEMORY_AND_DISK
+  int64 cache_budget_bytes = 25;
 }
 
 message Predicate {
@@ -62,6 +92,17 @@ message PartialResult {
   repeated AggregationGroup groups = 5;
 
   bool is_complete = 6;  // true on the final message of the stream
+  int64 rows_scanned = 7;
+  int64 bytes_scanned = 8;
+  int64 bytes_skipped = 9;
+  int64 peak_memory_bytes = 10;
+  bytes arrow_ipc = 11; // Arrow IPC stream batch for columnar plain-row results
+  bytes sketch_state = 12; // Serialized mergeable approximate state
+  repeated string shuffle_paths = 13; // Hash-bucket objects emitted by a shuffle map task
+  int64 bytes_written = 14;
+  int64 cpu_time_micros = 15; // cumulative user + system CPU consumed by this task
+  bool cache_hit = 16;
+  string cache_level = 17;
 }
 
 message Row {
@@ -78,6 +119,13 @@ message AggregationGroup {
 
   // group-by column name → group-by value (needed for final output row)
   map<string, string> group_values = 4;
+
+  // Phase 1 aggregate state. Keys are output aliases, so two aggregate
+  // expressions over the same input column never share mutable state.
+  // `values` carries SUM/AVG partial sums and MIN/MAX extrema.
+  // `counts` carries COUNT results and AVG non-null input counts.
+  map<string, double> values = 5;
+  map<string, int64>  counts = 6;
 }
 
 // ─── Worker Registration / Heartbeat ─────────────────────────────────────────
@@ -85,6 +133,7 @@ message WorkerInfo {
   string worker_id = 1;
   string address   = 2;
   int32  port      = 3;
+  repeated string capabilities = 4;
 }
 
 message RegisterResponse {
@@ -103,4 +152,7 @@ message HeartbeatResponse {
 
 // ─── Health Probe ─────────────────────────────────────────────────────────────
 message PingRequest  {}
-message PingResponse { bool alive = 1; }
+message PingResponse {
+  bool alive = 1;
+  string cache_stats_json = 2;
+}

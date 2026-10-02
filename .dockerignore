@@ -1,0 +1,6 @@
+.git
+**/node_modules
+**/dist
+**/target
+**/.env*
+npm-debug.log*

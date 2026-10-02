@@ -1,23 +1,37 @@
 # QueryForge — Distributed SQL Query Engine
 
-> A production-grade distributed SQL engine that processes million-row CSV datasets across parallel worker nodes. Upload a dataset, write SQL, and QueryForge distributes execution across 3 workers — returning results faster than any single-machine setup.
+> A fault-tolerant distributed analytics laboratory that makes the CS404 progression from MapReduce to Spark-style lineage to event-time streaming executable, observable, and reproducible. QueryForge is a course engine—not a claim of production readiness or Spark API compatibility.
 >
 > **Architected after AWS Athena · Google BigQuery · Apache Drill**
 
 ---
 
-## Benchmark Results
+## Verified evidence
 
-| Metric | Value |
-|--------|-------|
-| Dataset size | 2,000,000 rows |
-| Single-machine time | 5,958ms |
-| Distributed (3 workers) | 3,512ms |
-| **Speedup** | **1.70x faster** |
-| Throughput | ~570,000 rows/sec |
-| Max tested | 5,000,000 rows ✓ |
+`npm run verify` generates the authoritative checksum-validated report under
+`benchmarks/artifacts/`. It covers DuckDB differential correctness, Parquet
+pruning, joins and adaptive skew, approximate analytics, 1/2/4/8-worker
+scaling, chaos/restarts, MapReduce ablations, lineage/cache recovery, workload
+replay, and Kafka exactly-once windows. The Systems Lab reads only the generated
+`milestone2-report.json` artifact for performance claims.
 
-Query: `SELECT department, COUNT(*), AVG(salary), MAX(salary), MIN(salary), SUM(salary) FROM employees WHERE age > 20 GROUP BY department ORDER BY total DESC`
+See [QUERYFORGE_X_ROADMAP.md](QUERYFORGE_X_ROADMAP.md) for phase evidence and
+[PRESENTATION_GUIDE.md](PRESENTATION_GUIDE.md) for the five-minute demo.
+
+## Milestone 2 course systems
+
+- **MapReduce:** explicit merge-safe combiners, genuine combiner-off execution,
+  partition-skew exploration, measured cost equations, and backup tasks.
+- **Spark-style concepts:** lazy actions, durable partition lineage,
+  MEMORY/DISK LRU persistence, broadcast reuse, winner-only accumulators, and
+  one-partition replay.
+- **Cost Analyzer:** critical path, physical-operator metrics, measured cost
+  domains, checksum-safe what-if execution, and named workload replay.
+- **Streaming SQL:** Kafka-compatible standing queries, worker micro-batches,
+  TUMBLE/HOP/SESSION windows, watermarks, late-data audit, sketch error, and
+  immutable Parquet snapshots.
+- **Presentation:** artifact-backed ablations, accessible operator lessons,
+  pan/zoom lineage, quiz cards, and a keyboard walkthrough.
 
 ---
 
@@ -32,8 +46,8 @@ Query: `SELECT department, COUNT(*), AVG(salary), MAX(salary), MIN(salary), SUM(
 ┌─────────────────────────▼───────────────────────────────────────────┐
 │                    Coordinator  (Node.js)                             │
 │                                                                       │
-│  SQL Parser → Execution Plan → Job Manager → Result Merger           │
-│  ⚡ EXPLAIN endpoint · Fault Monitor · WebSocket broadcaster          │
+│  SQL Parser → Costed DAG → Adaptive Scheduler → Result Merger        │
+│  ⚡ EXPLAIN · Lineage · Stream Registry · WebSocket broadcaster       │
 │  CoordinatorService gRPC server  (workers register here)             │
 └──────────┬──────────────────┬───────────────────┬────────────────────┘
            │ gRPC             │ gRPC              │ gRPC
@@ -52,9 +66,9 @@ Query: `SELECT department, COUNT(*), AVG(salary), MAX(salary), MIN(salary), SUM(
            └──────────────────┼───────────────────┘
                               │ All read from
                    ┌──────────▼──────────┐
-                   │    MinIO  (S3)       │
-                   │  datasets/          │
-                   │  partitions/        │
+                   │ SeaweedFS (S3 API)   │
+                   │ Parquet · shuffle    │
+                   │ immutable snapshots │
                    └─────────────────────┘
           PostgreSQL ── metadata, jobs, tasks, workers
           Prometheus + Grafana ── metrics, dashboards
@@ -64,8 +78,10 @@ Query: `SELECT department, COUNT(*), AVG(salary), MAX(salary), MIN(salary), SUM(
 
 ## Key Features
 
-### ① Predicate Pushdown
-WHERE filters applied **row-by-row during CSV streaming**, before any rows enter memory. Non-matching rows are discarded immediately — never transferred to coordinator.
+### ① Predicate and row-group pushdown
+The legacy CSV path filters while streaming. The default Parquet path pushes
+projection and predicates into DuckDB/DataFusion, pruning row groups from
+catalog min/max statistics before their values reach the coordinator.
 
 ```
 Worker reads CSV:
@@ -87,10 +103,14 @@ Coordinator merges → final AVG = total_sum / total_count
 ```
 
 ### ③ Automatic Fault Recovery
-Workers send heartbeats every 5 seconds. If a worker misses 3 heartbeats (15s), coordinator marks it dead and reassigns its partition to a healthy worker. Max 3 reassignment attempts per partition.
+Workers send heartbeats every 5 seconds. If a worker disappears, the coordinator
+retries the logical partition on a healthy worker and atomically commits one
+winner. Duration-aware speculative attempts follow the same winner rule.
 
-### ④ EXPLAIN Endpoint (like PostgreSQL's EXPLAIN)
-`POST /api/explain` returns the full execution plan before running — shows which predicates are pushed down, partition assignment per worker, aggregation strategy per function.
+### ④ EXPLAIN and measured Query Autopsy
+`POST /api/explain` returns the validated plan and teaching equations. Supplying
+a completed `jobId` attaches measured input, shuffle, output, CPU, and
+critical-path costs. Query Autopsy ranks the physical operators and cost domains.
 
 ### ⑤ OpenTelemetry Observability
 Every coordinator and worker exposes metrics on `:9464/metrics`. Custom spans on `query.plan`, `job.execute`, `task.execute` with `rows.scanned` vs `rows.passed_filter` attributes.
@@ -102,16 +122,17 @@ Every coordinator and worker exposes metrics on `:9464/metrics`. Custom spans on
 ```bash
 git clone https://github.com/princekr969/QueryForge-
 cd QueryForge-
-docker compose up --build
+docker compose --profile streaming up --build
 ```
 
-**That's it.** All 9 services start automatically. No manual setup.
+This starts the batch engine, observability stack, and Kafka-compatible source.
+Add `--profile scaling --scale worker-scale=5` for the eight-worker matrix.
 
 | Service | URL |
 |---------|-----|
 | **Frontend** | http://localhost:5173 |
 | **Coordinator API** | http://localhost:3000 |
-| **MinIO Console** | http://localhost:9001 (minioadmin / minioadmin) |
+| **SeaweedFS Admin** | http://localhost:9001 |
 | **Prometheus** | http://localhost:9090/targets |
 | **Grafana** | http://localhost:3001 (admin / admin) |
 
@@ -146,26 +167,26 @@ Supported aggregations: `COUNT`, `SUM`, `AVG`, `MAX`, `MIN`
 
 ---
 
-## Query Execution — 20-Step Flow
+## Query execution — condensed flow
 
 ```
 1.  POST /api/query  { sql, datasetId }
 2.  node-sql-parser → AST
 3.  Extract: predicates, GROUP BY, aggregations, ORDER BY, LIMIT
-4.  Look up dataset + 3 partitions in PostgreSQL
-5.  Create Job + 3 Tasks in PostgreSQL
-6.  Dispatch 3 gRPC ExecuteTask calls in parallel (Promise.all)
-7.  Each worker: getObject(MinIO) → write to /tmp/{taskId}.csv
-8.  Each worker: stream CSV row-by-row → apply WHERE predicates
-9.  Each worker: build local GROUP BY hash map
-10. Each worker: stream AggregationGroup messages → coordinator
-11. Coordinator: merge 3 hash maps (SUM totals, MAX of MAXes, COUNT sums)
+4.  Bind immutable catalog snapshots and physical Parquet partitions
+5.  Cost local, broadcast, or hash-shuffle execution and persist the lineage DAG
+6.  Dispatch bounded gRPC tasks to the least-loaded eligible workers
+7.  Each worker reads the S3-compatible object with projection/row-group pruning
+8.  DuckDB or DataFusion streams Arrow batches under a memory reservation
+9.  A merge-safe combiner builds alias-keyed local aggregate state
+10. Workers stream Arrow or aggregate states plus operator evidence
+11. Coordinator commits one winner per logical partition and ignores losers
 12. Coordinator: compute final AVG = total_sum / total_count
 13. Coordinator: apply ORDER BY on merged result
 14. Coordinator: apply LIMIT
 15. Coordinator: stream rows via WebSocket → frontend
 16. Frontend: render rows as they arrive
-17. Coordinator: UPDATE jobs SET status='completed'
+17. Coordinator atomically persists results, accumulators, lineage, and checksum
 18. WebSocket: { type: 'complete', totalRows, executionTimeMs }
 19. OTel spans closed with row counts
 20. Prometheus metrics updated
@@ -189,15 +210,16 @@ docker compose start worker-2   # brings it back online
 
 ---
 
-## Running the Benchmark
+## Running the verification matrix
 
 ```bash
-cd benchmarks
-npm install
-node run_benchmark.js
+npm ci --prefix benchmarks
+npm run verify
 ```
 
-Generates 2M rows → uploads → runs distributed query → runs same query single-machine → prints speedup.
+This runs all 13 checksum-gated suites and writes JSON, Markdown, and SVG
+artifacts to `benchmarks/artifacts/`. It requires the Compose stack with both
+the `streaming` and `scaling` profiles.
 
 ---
 
@@ -210,7 +232,14 @@ Generates 2M rows → uploads → runs distributed query → runs same query sin
 | `GET` | `/api/datasets/:id` | Dataset + partition details |
 | `POST` | `/api/query` | Submit SQL, returns `{ jobId }` immediately |
 | `GET` | `/api/query/jobs/:id` | Job status + per-task metrics |
-| `POST` | `/api/explain` | Execution plan JSON (no query executed) |
+| `POST` | `/api/explain` | Plan plus optional completed-job measured costs |
+| `POST` | `/api/explain/partition` | Catalog-bound partition/skew explorer |
+| `POST` | `/api/plans` | Create a lazy plan; explicit actions execute it |
+| `GET` | `/api/lineage` | Dataset/operator/partition lineage DAG |
+| `POST` | `/api/lineage/recover` | Replay one invalidated partition |
+| `POST` | `/api/streams/register` | Register a validated standing query |
+| `POST` | `/api/streams/unregister` | Execute `UNREGISTER QUERY name` |
+| `POST` | `/api/workloads/:id/replay` | Replay a named workload against snapshots |
 | `GET` | `/api/workers` | Live worker registry with heartbeat status |
 | `GET` | `/api/health` | Coordinator health check |
 
@@ -232,14 +261,14 @@ Generates 2M rows → uploads → runs distributed query → runs same query sin
 
 | Layer | Technology |
 |-------|-----------|
-| Coordinator | Node.js 20, Express 4, gRPC (`@grpc/grpc-js`), WebSocket (`ws`) |
-| Workers | Node.js 20, gRPC server-side streaming |
+| Coordinator | Node.js 24, Express 4, gRPC, WebSocket, KafkaJS |
+| Workers | Node.js 24/DuckDB plus optional Rust/DataFusion, Arrow IPC, gRPC streaming |
 | SQL Parsing | `node-sql-parser` (PostgreSQL dialect) |
-| Object Storage | MinIO (S3-compatible) |
+| Object Storage | S3-compatible SeaweedFS endpoint, immutable Parquet/shuffle objects |
 | Metadata | PostgreSQL 15 |
 | Observability | OpenTelemetry SDK, Prometheus, Grafana |
 | Containerisation | Docker Compose (9 services) |
-| Frontend | React 18, Vite 5, Tailwind CSS 3 |
+| Frontend | React 19, Vite 8, Tailwind CSS |
 
 ---
 
@@ -250,14 +279,15 @@ QueryForge/
 ├── coordinator/          # Coordinator node
 │   ├── src/
 │   │   ├── grpc/         # CoordinatorService server + WorkerService client
-│   │   ├── routes/       # datasets, query, workers, explain
+│   │   ├── routes/       # query, plans, lineage, streams, workloads, evidence
 │   │   ├── services/     # queryPlanner, partitioner, jobManager,
-│   │   │                 # resultMerger, faultMonitor
+│   │   │                 # adaptive joins, streaming, caches, cost analysis
 │   │   ├── websocket/    # WebSocket server (ping/pong + job subscriptions)
 │   │   └── db/           # PostgreSQL connection pool
 │   ├── schema.sql
 │   └── tracing.js        # OTel SDK (loaded before index.js via -r flag)
-├── worker/               # Worker node
+├── worker/               # Node/DuckDB worker
+├── worker-rust/          # Rust/DataFusion worker under the same gRPC contract
 │   ├── src/
 │   │   ├── grpc/         # WorkerService server + CoordinatorService client
 │   │   └── services/     # taskExecutor, predicateEvaluator,
@@ -271,9 +301,9 @@ QueryForge/
 ├── monitoring/
 │   ├── prometheus.yml
 │   └── provisioning/     # Grafana auto-provisioned datasource + dashboard
-├── benchmarks/
-│   └── run_benchmark.js  # 2M row benchmark script
-└── docker-compose.yml    # 9 services, zero manual setup
+├── benchmarks/           # 13-suite reproducible verification matrix
+├── shared/               # Mergeable sketches shared by coordinator/workers
+└── docker-compose.yml    # Batch, streaming, scaling, and observability profiles
 ```
 
 ---
@@ -283,20 +313,26 @@ QueryForge/
 **Why gRPC between coordinator and workers, not REST?**
 gRPC supports server-side streaming natively — workers stream partial results back as they process, without buffering everything first. REST would require workers to finish completely before sending anything, removing the streaming benefit.
 
-**Why MinIO and not shared filesystem?**
-Shared filesystem doesn't work across distributed nodes. MinIO gives each worker independent object access — worker-1 reads partition-0, worker-2 reads partition-1, both simultaneously, with no coordination needed.
+**Why S3-compatible object storage and not a shared filesystem?**
+A shared filesystem does not model independent distributed workers. SeaweedFS's
+S3 endpoint lets every worker independently read immutable Parquet and shuffle
+objects; the Rust path signs the same S3 requests directly.
 
 **Why partial aggregation instead of sending all rows?**
 For a GROUP BY query on 2M rows with 8 groups, sending raw rows means 666,667 rows per worker × 3 workers = 2M rows through the coordinator. Partial aggregation sends 8 hash map entries per worker = 24 objects total. The network difference is ~100MB vs ~200 bytes.
 
 **What's the bottleneck right now?**
-Coordinator is a single point of failure and also the merge bottleneck. For production I'd shard the merge across multiple coordinator instances, similar to how Presto uses a coordinator cluster.
+The active coordinator is still the final merge and scheduling bottleneck.
+Durable PostgreSQL state makes restart/replay deterministic, but horizontal
+multi-coordinator consensus is intentionally outside this course milestone.
 
 **How would you scale beyond 3 workers?**
 Partition count = worker count. Dynamic partitioning would split the dataset into N chunks at upload time based on registered workers. The current round-robin assignment already handles N workers — changing `partitionCount` from 3 to N is the only required change.
 
-**Why 3 partitions specifically?**
-Matched to the 3 workers in this deployment. Coordinator assigns partition[i] to worker[i % workerCount], so adding a 4th worker automatically gets partition-3 if it exists.
+**Why are partition and worker counts independent?**
+Datasets choose a validated partition count at ingestion. The scheduler assigns
+those logical partitions across however many workers are currently active, so
+the 1/2/4/8-worker study uses the same immutable snapshot at every scale.
 
 ---
 

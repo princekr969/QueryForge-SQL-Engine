@@ -1,8 +1,14 @@
 node_modules/
 .env
+.env.*
 *.csv
+!tests/fixtures/*.csv
 /tmp/
 benchmarks/benchmark_data.csv
+
+# Build outputs
+dist/
+target/
 
 # Docker volumes
 postgres_data/

@@ -1,0 +1,1 @@
+ALTER TABLE jobs ADD COLUMN IF NOT EXISTS query_context_json JSONB NOT NULL DEFAULT '{}'::jsonb;

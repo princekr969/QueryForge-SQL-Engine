@@ -3,13 +3,28 @@
   "version": "1.0.0",
   "description": "QueryForge benchmark scripts",
   "scripts": {
-    "bench": "node run_benchmark.js"
+    "bench": "node run_benchmark.js",
+    "differential": "node differential_test.js",
+    "storage-ablation": "node storage_ablation.js",
+    "join-differential": "node join_differential.js",
+    "chaos-matrix": "node chaos_matrix.js",
+    "restart-recovery": "node restart_recovery.js",
+    "approximation-accuracy": "node approximation_accuracy.js",
+    "worker-crash": "node worker_crash.js",
+    "scaling-study": "node scaling_study.js",
+    "adaptive-skew": "node adaptive_skew.js",
+    "mapreduce-refinements": "node mapreduce_refinements.js",
+    "streaming-exactly-once": "node streaming_exactly_once.js",
+    "spark-abstractions": "node spark_abstractions.js",
+    "cost-analyzer-replay": "node cost_analyzer_replay.js",
+    "verify-all": "node verification_matrix.js"
   },
   "dependencies": {
-    "axios":         "^1.6.0",
-    "csv-parse":     "^5.5.0",
-    "csv-stringify":  "^6.4.0",
-    "form-data":     "^4.0.0",
-    "ws":            "^8.14.0"
+    "@duckdb/node-api": "^1.5.6-r.1",
+    "axios": "^1.20.0",
+    "csv-parse": "^7.0.3",
+    "csv-stringify": "^6.9.0",
+    "form-data": "^4.0.6",
+    "ws": "^8.22.0"
   }
 }

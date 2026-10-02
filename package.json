@@ -1,0 +1,11 @@
+{
+  "name": "queryforge-x",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "verify": "npm --prefix benchmarks run verify-all",
+    "demo:survive-crash": "node benchmarks/demo_survive_crash.js",
+    "demo:streaming": "node benchmarks/streaming_exactly_once.js"
+  }
+}

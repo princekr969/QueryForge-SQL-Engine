@@ -9,26 +9,19 @@
 
 const assert = require('node:assert/strict')
 const { describe, it } = require('node:test')
+const fs = require('node:fs/promises')
+const os = require('node:os')
+const path = require('node:path')
+const crypto = require('node:crypto')
+const { inferType, partitionIndexForRow } = require('../coordinator/src/services/partitionLogic')
+const { scanCsv } = require('../coordinator/src/services/partitioner')
 
 // ── Pure logic extracted from partitioner for unit testing ────────────────────
 
-function inferType (rows, columnName) {
-  const sampleSize = Math.min(rows.length, 100)
-  for (let i = 0; i < sampleSize; i++) {
-    const val = rows[i][columnName]
-    if (val === null || val === undefined || val === '') continue
-    if (isNaN(parseFloat(val)) || !isFinite(val)) return 'string'
-  }
-  return 'number'
-}
-
 function splitIntoPartitions (rows, partitionCount) {
-  const chunkSize = Math.ceil(rows.length / partitionCount)
-  const partitions = []
-  for (let i = 0; i < partitionCount; i++) {
-    const start = i * chunkSize
-    const end = Math.min(start + chunkSize, rows.length)
-    partitions.push(rows.slice(start, end))
+  const partitions = Array.from({ length: partitionCount }, () => [])
+  for (let index = 0; index < rows.length; index++) {
+    partitions[partitionIndexForRow(index, rows.length, partitionCount)].push(rows[index])
   }
   return partitions.filter(p => p.length > 0)
 }
@@ -72,6 +65,16 @@ describe('partitioner — row splitting', () => {
     const totalRows = parts.reduce((sum, p) => sum + p.length, 0)
     assert.equal(totalRows, 100)
   })
+
+  it('preserves order and every row across 500 generated layouts', () => {
+    for (let rowCount = 1; rowCount <= 100; rowCount++) {
+      for (let partitionCount = 1; partitionCount <= 5; partitionCount++) {
+        const rows = Array.from({ length: rowCount }, (_, id) => ({ id }))
+        const flattened = splitIntoPartitions(rows, partitionCount).flat()
+        assert.deepEqual(flattened, rows)
+      }
+    }
+  })
 })
 
 describe('partitioner — schema type inference', () => {
@@ -98,5 +101,23 @@ describe('partitioner — schema type inference', () => {
   it('infers number for float values', () => {
     const rows = [{ salary: '75000.50' }, { salary: '80000.00' }]
     assert.equal(inferType(rows, 'salary'), 'number')
+  })
+})
+
+describe('partitioner — disk-streamed scan', () => {
+  it('counts and samples a CSV from a file path', async () => {
+    const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'queryforge-test-'))
+    const file = path.join(directory, 'input.csv')
+    try {
+      const contents = 'id,name\n1,Ada\n2,Grace\n'
+      await fs.writeFile(file, contents)
+      const scan = await scanCsv(file)
+      assert.equal(scan.rowCount, 2)
+      assert.deepEqual(scan.columnNames, ['id', 'name'])
+      assert.deepEqual(scan.sample[1], { id: '2', name: 'Grace' })
+      assert.equal(scan.contentChecksum, crypto.createHash('sha256').update(contents).digest('hex'))
+    } finally {
+      await fs.rm(directory, { recursive: true, force: true })
+    }
   })
 })

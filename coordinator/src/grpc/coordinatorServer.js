@@ -4,12 +4,13 @@ const grpc        = require('@grpc/grpc-js')
 const protoLoader = require('@grpc/proto-loader')
 const path        = require('path')
 const db          = require('../db')
+const { workerRegistry } = require('../services/workerRegistry')
 
 // Proto path: works both in Docker (/proto) and locally (../../proto)
 const PROTO_PATH = process.env.PROTO_PATH ||
   (require('fs').existsSync('/proto/dataforge.proto')
     ? '/proto/dataforge.proto'
-    : path.join(__dirname, '../../../../proto/dataforge.proto'))
+    : path.join(__dirname, '../../../proto/dataforge.proto'))
 
 const packageDef = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
@@ -20,9 +21,6 @@ const packageDef = protoLoader.loadSync(PROTO_PATH, {
 })
 
 const proto = grpc.loadPackageDefinition(packageDef).dataforge
-
-// In-memory worker registry — source of truth for live workers
-const workerRegistry = new Map()
 
 const HEARTBEAT_TIMEOUT_MS = 15_000
 
@@ -45,7 +43,7 @@ const heartbeatCheckInterval = setInterval(async () => {
 // ── RPC implementations ───────────────────────────────────────────────────────
 
 async function register (call, callback) {
-  const { worker_id, address, port } = call.request
+  const { worker_id, address, port, capabilities = [] } = call.request
   console.log(`[Coordinator] Worker registered: ${worker_id} @ ${address}:${port}`)
 
   workerRegistry.set(worker_id, {
@@ -54,7 +52,8 @@ async function register (call, callback) {
     port,
     lastHeartbeat: Date.now(),
     status:        'active',
-    activeTasks:   0
+    activeTasks:   0,
+    capabilities
   })
 
   try {
@@ -82,13 +81,21 @@ async function heartbeat (call, callback) {
     worker.status        = 'active'
     worker.activeTasks   = active_tasks
   } else {
+    let persisted = null
+    try {
+      const result = await db.query('SELECT address, port FROM workers WHERE id = $1', [worker_id])
+      persisted = result.rows[0] || null
+    } catch {}
     workerRegistry.set(worker_id, {
       workerId:      worker_id,
-      address:       'unknown',
-      port:          parseInt(process.env.WORKER_PORT || '50051', 10),
+      address:       persisted?.address || worker_id,
+      port:          persisted?.port || parseInt(process.env.WORKER_PORT || '50051', 10),
       lastHeartbeat: Date.now(),
       status:        'active',
-      activeTasks:   active_tasks
+      activeTasks:   active_tasks,
+      capabilities: worker_id.includes('rust')
+        ? ['scan', 'aggregate', 'join', 'stream']
+        : ['scan', 'aggregate', 'join', 'shuffle', 'sketch', 'stream']
     })
   }
 

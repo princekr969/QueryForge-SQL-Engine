@@ -11,9 +11,10 @@ const crypto                  = require('crypto')
 const { tableFromIPC }         = require('apache-arrow')
 const db                      = require('../db')
 const { executeTaskOnWorker } = require('../grpc/workerClient')
-const { workerRegistry }      = require('./workerRegistry')
+const { workerRegistry, compareWorkerSchedulingOrder } = require('./workerRegistry')
 const { buildExecutionPlan, validatePlanAgainstSchema, validateJoinPlanAgainstSchemas } = require('./queryPlanner')
 const { mergeResults }        = require('./resultMerger')
+const { partialResultsChecksum } = require('./resultChecksum')
 const { getJobSubscribers }   = require('../websocket/wsServer')
 const chaosController          = require('./chaosController')
 const { materializeHashShuffle, chooseJoinStrategy } = require('./adaptiveJoin')
@@ -59,7 +60,7 @@ function getEligibleWorkers (plan, workerLimit = 0) {
   const eligible = getActiveWorkers()
     .filter(worker => !plan.join || (worker.capabilities?.includes('join') &&
       (plan.joinStrategy === 'broadcast' || plan.joinStrategy === 'local' || worker.capabilities?.includes('shuffle'))))
-    .sort((left, right) => left.workerId.localeCompare(right.workerId))
+    .sort(compareWorkerSchedulingOrder)
   return workerLimit > 0 ? eligible.slice(0, workerLimit) : eligible
 }
 
@@ -473,14 +474,10 @@ async function executeQuery (sql, datasetId, preGeneratedJobId, datasetIds = {},
             sum + Number(result.arrow_ipc?.length || Buffer.byteLength(JSON.stringify(
               result.groups?.length ? result.groups : (result.rows || [])
             ))), 0)
-          const partialResultChecksum = crypto.createHash('sha256').update(JSON.stringify(partialResults.map(result => ({
-            isAggregated: result.is_aggregated,
-            columnNames: result.column_names,
-            rows: result.rows,
-            groups: result.groups,
-            arrowIpc: result.arrow_ipc ? Buffer.from(result.arrow_ipc).toString('base64') : '',
-            isComplete: result.is_complete
-          })))).digest('hex')
+          // Relational rows and aggregate groups have no intrinsic wire order.
+          // Hash their canonical semantic result so replay on another worker
+          // cannot produce a false lineage mismatch from serialization order.
+          const partialResultChecksum = partialResultsChecksum(partialResults, plan)
           const operatorMetrics = {
             strategy: plan.joinStrategy || 'partition_scan',
             estimatedRows: Number(partition.row_count || 0),

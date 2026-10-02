@@ -1,35 +1,60 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T00:00:00.000Z",
-  "verificationState": "focused-gates-passed",
+  "generatedAt": "2026-10-02T09:49:32.462Z",
+  "verificationState": "full-matrix-passed",
+  "verificationReport": "verification-report.json",
   "ablations": [
     {
       "id": "combiner",
       "title": "MapReduce combiner",
-      "baseline": { "label": "combiner off", "value": 100, "unit": "% mapper output" },
-      "optimized": { "label": "combiner on", "value": 0.1161, "unit": "% mapper output" },
-      "improvement": "99.8839% fewer transfer bytes",
-      "invariant": "identical result checksum"
+      "baseline": {
+        "label": "combiner off",
+        "value": 100,
+        "unit": "% mapper output"
+      },
+      "optimized": {
+        "label": "combiner on",
+        "value": 0.4142,
+        "unit": "% mapper output"
+      },
+      "improvement": "99.5858% fewer transfer bytes",
+      "invariant": "identical result checksum across three workloads"
     },
     {
       "id": "worker-cache",
       "title": "Warm worker cache",
-      "baseline": { "label": "cold", "value": 130, "unit": "ms" },
-      "optimized": { "label": "warm", "value": 88, "unit": "ms" },
-      "improvement": "32.3% lower latency; 8 cache hits",
+      "baseline": {
+        "label": "cold",
+        "value": 60,
+        "unit": "ms"
+      },
+      "optimized": {
+        "label": "warm",
+        "value": 53,
+        "unit": "ms"
+      },
+      "improvement": "11.7% lower measured latency; 8 cache hits",
       "invariant": "identical result checksum"
     },
     {
       "id": "speculation",
       "title": "Duration-aware speculation",
-      "baseline": { "label": "disabled", "value": 953, "unit": "ms p99" },
-      "optimized": { "label": "enabled", "value": 308, "unit": "ms p99" },
-      "improvement": "67.68% lower injected-straggler p99",
+      "baseline": {
+        "label": "disabled",
+        "value": 967,
+        "unit": "ms p99"
+      },
+      "optimized": {
+        "label": "enabled",
+        "value": 309,
+        "unit": "ms p99"
+      },
+      "improvement": "68.05% lower injected-straggler p99",
       "invariant": "identical result checksum"
     }
   ],
   "resilience": {
-    "workerCrash": "1 failed attempt; speculative replacement committed; checksum preserved",
-    "streamRestart": "600/600 accepted events, zero duplicate/lost events, exact revenue 7179"
+    "workerCrash": "1 failed attempt(s); checksum d46abbd4e4f640721d5eed677f788241abf1f6f7b574b188a9590de80f2a9a55",
+    "streamRestart": "601/601 accepted events, 0 duplicate/lost; worker failover and coordinator restart passed"
   }
 }

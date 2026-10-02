@@ -10,6 +10,11 @@
 | 4. Approximate analytics | **Complete** | Workers emit one mergeable state per partition for HLL, KLL, count-min heavy hitters, and priority reservoirs; the coordinator persists error/size/latency evidence; the Sketch Lab compares exact and approximate values; the seeded uniform, Zipfian, and adversarial gate passed |
 | 5. Chaos and durable control plane | **Complete** | Durable winner constraints, SHA-256 checksums, content-addressed immutable dataset snapshots, five injected-failure modes, actual worker-container termination, coordinator restart replay, and an automated CI failure matrix are implemented and checksum-verified |
 | 6. Explainability and evaluation | **Complete** | Physical-plan DAGs, CPU/RSS/row/byte counters, Query Autopsy, all requested ablations, TPC-H-derived workloads, verified 1/2/4/8-worker scaling, and a green one-command JSON/Markdown/SVG report are implemented |
+| 2.5. MapReduce refinement | **Complete** | Three checksum-safe combiner ablations, balanced/skewed partition exploration, measured EXPLAIN costs, and a five-run speculation study passed in the 13-suite matrix |
+| 6.5. Spark-style abstractions | **Complete** | Lazy planning p95 was 7 ms; all cache levels, 1 MiB eviction, broadcast pin release, winner-only accumulators, and one-partition lineage replay passed |
+| 7. Query Autopsy and Cost Analyzer | **Complete** | Five canonical autopsies, three ranked operators per query, measured what-if execution, and five checksum-safe workload replays passed |
+| 8. Streaming SQL | **Complete** | TUMBLE/HOP/SESSION, coordinator and worker failure, 602 durable inputs, 601 accepted events, one audited late event, zero duplication/loss, and Parquet materialization passed |
+| 9. Educational presentation | **Complete** | The Worker 2 crash demo passed in 2.75 seconds; keyboard walkthrough, quiz, lineage pan/zoom, live 120-event stream, and Query Autopsy inspection passed in a headless browser |
 
 Status is evidence-based: a phase is only marked complete after its exit gate runs successfully.
 
@@ -244,17 +249,17 @@ its focused gate and the complete Milestone 1 regression matrix both pass.
 
 | Phase | Implementation status | Required proof |
 |---|---|---|
-| 2.5 MapReduce refinement | **Implemented; focused gate passed** | Three combiner ablations, partition-skew explorer, cost equations, p99 speculation experiment |
-| 6.5 Spark-style abstractions | **Implemented; focused gate passed** | Durable partition lineage, lazy actions, bounded cache levels, pinned broadcasts, exactly-once accumulators |
-| 7 Query Autopsy & Cost Analyzer | **Implemented; focused gate passed** | Top operators, cost attribution, measured what-if replay, workload regression replay |
-| 8 Streaming SQL | **Implemented; enhanced gate awaiting matrix rerun** | Kafka-compatible source, windows/watermarks, durable offsets/state, zero committed-batch loss, materialization |
-| 9 Educational presentation | **Implemented; focused gate passed** | One-command crash demo, course tooltips, lineage/ablation views, quiz and accessible walkthrough |
+| 2.5 MapReduce refinement | **Complete** | Three combiner ablations, partition-skew explorer, cost equations, p99 speculation experiment |
+| 6.5 Spark-style abstractions | **Complete** | Durable partition lineage, lazy actions, bounded cache levels, pinned broadcasts, exactly-once accumulators |
+| 7 Query Autopsy & Cost Analyzer | **Complete** | Top operators, cost attribution, measured what-if replay, workload regression replay |
+| 8 Streaming SQL | **Complete** | Kafka-compatible source, windows/watermarks, durable offsets/state, zero committed-batch loss, materialization |
+| 9 Educational presentation | **Complete** | One-command crash demo, course tooltips, lineage/ablation views, quiz and accessible walkthrough |
 
-The earlier focused runs are preserved in
-`benchmarks/artifacts/milestone2-report.json`. The status wording above does not
-claim final acceptance: every phase becomes **Complete** only when the enhanced
-13-suite matrix regenerates that artifact with
-`verificationState: full-matrix-passed`.
+The clean rebuilt deployment passed all 13 suites on code revision `5d84e69`.
+`benchmarks/artifacts/milestone2-report.json` now records
+`verificationState: full-matrix-passed`; the detailed machine-readable results,
+checksums, timings, environment, and suite outputs are in
+`benchmarks/artifacts/verification-report.json`.
 
 ### Milestone 2 acceptance and scope boundaries
 

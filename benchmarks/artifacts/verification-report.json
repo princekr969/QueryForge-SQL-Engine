@@ -1,8 +1,8 @@
 {
   "status": "passed",
-  "startedAt": "2026-10-01T13:55:55.927Z",
-  "completedAt": "2026-10-01T13:57:43.019Z",
-  "commit": "b8de8068669e3151bd4a30e39fd778ace2b08295",
+  "startedAt": "2026-10-02T09:46:50.851Z",
+  "completedAt": "2026-10-02T09:49:32.462Z",
+  "commit": "5d84e69069c52014f4cd34e36fc8d23bfb9a7f9b",
   "hardware": {
     "platform": "linux",
     "release": "6.14.0-37-generic",
@@ -20,36 +20,36 @@
       "seed": "0x51f15e",
       "datasetRows": 300,
       "queries": 100,
-      "durationMs": 5819,
-      "datasetId": "26a66e7a-bf95-4f5d-8f1c-062fc3867d44"
+      "durationMs": 6509,
+      "datasetId": "0d2eef34-b66e-42e3-b616-656a485d063f"
     },
     "storage": {
       "status": "passed",
-      "datasetId": "0e901088-a2a5-41f5-88a5-89659618cb3e",
+      "datasetId": "51ea044a-5bef-45df-b8f9-7614816b5b14",
       "rowCount": 100000,
       "query": "SELECT id, amount FROM storage_ablation WHERE id > 99000 ORDER BY id ASC",
       "csv": {
         "format": "csv",
         "repetitions": 5,
-        "p50Ms": 93,
-        "p95Ms": 115,
+        "p50Ms": 149,
+        "p95Ms": 472,
         "medianScannedBytes": 2127952,
         "medianSkippedBytes": 0,
         "medianTransferredBytes": 26897,
-        "medianPeakTaskMemoryBytes": 393216,
-        "medianCpuTimeMicros": 205472,
+        "medianPeakTaskMemoryBytes": 262144,
+        "medianCpuTimeMicros": 197350,
         "resultRows": 1000
       },
       "parquet": {
         "format": "parquet",
         "repetitions": 5,
-        "p50Ms": 44,
-        "p95Ms": 46,
+        "p50Ms": 71,
+        "p95Ms": 100,
         "medianScannedBytes": 4633,
         "medianSkippedBytes": 144430,
         "medianTransferredBytes": 25636,
-        "medianPeakTaskMemoryBytes": 3014656,
-        "medianCpuTimeMicros": 59597,
+        "medianPeakTaskMemoryBytes": 2228224,
+        "medianCpuTimeMicros": 60568,
         "resultRows": 1000
       },
       "scannedByteReduction": 0.9978227892358474,
@@ -58,53 +58,53 @@
         "csv": {
           "format": "csv",
           "repetitions": 5,
-          "p50Ms": 111,
-          "p95Ms": 122,
+          "p50Ms": 144,
+          "p95Ms": 169,
           "medianScannedBytes": 2127952,
           "medianSkippedBytes": 0,
           "medianTransferredBytes": 519,
-          "medianPeakTaskMemoryBytes": 17170432,
-          "medianCpuTimeMicros": 277851,
+          "medianPeakTaskMemoryBytes": 11141120,
+          "medianCpuTimeMicros": 264334,
           "resultRows": 1
         },
         "parquet": {
           "format": "parquet",
           "repetitions": 5,
-          "p50Ms": 39,
-          "p95Ms": 40,
+          "p50Ms": 93,
+          "p95Ms": 103,
           "medianScannedBytes": 149063,
           "medianSkippedBytes": 0,
           "medianTransferredBytes": 468,
-          "medianPeakTaskMemoryBytes": 2883584,
-          "medianCpuTimeMicros": 51715,
+          "medianPeakTaskMemoryBytes": 3145728,
+          "medianCpuTimeMicros": 55262,
           "resultRows": 1
         },
-        "peakTaskMemoryReduction": 0.83206106870229
+        "peakTaskMemoryReduction": 0.7176470588235294
       },
       "ablations": {
         "storageAndVectorization": {
           "legacyRowCsv": {
             "format": "csv",
             "repetitions": 5,
-            "p50Ms": 111,
-            "p95Ms": 122,
+            "p50Ms": 144,
+            "p95Ms": 169,
             "medianScannedBytes": 2127952,
             "medianSkippedBytes": 0,
             "medianTransferredBytes": 519,
-            "medianPeakTaskMemoryBytes": 17170432,
-            "medianCpuTimeMicros": 277851,
+            "medianPeakTaskMemoryBytes": 11141120,
+            "medianCpuTimeMicros": 264334,
             "resultRows": 1
           },
           "vectorizedParquet": {
             "format": "parquet",
             "repetitions": 5,
-            "p50Ms": 39,
-            "p95Ms": 40,
+            "p50Ms": 93,
+            "p95Ms": 103,
             "medianScannedBytes": 149063,
             "medianSkippedBytes": 0,
             "medianTransferredBytes": 468,
-            "medianPeakTaskMemoryBytes": 2883584,
-            "medianCpuTimeMicros": 51715,
+            "medianPeakTaskMemoryBytes": 3145728,
+            "medianCpuTimeMicros": 55262,
             "resultRows": 1
           },
           "note": "CSV uses the streamed row executor; Parquet uses vectorized DuckDB batches."
@@ -118,25 +118,25 @@
           "rawProjection": {
             "format": "parquet",
             "repetitions": 5,
-            "p50Ms": 99,
-            "p95Ms": 138,
+            "p50Ms": 140,
+            "p95Ms": 155,
             "medianScannedBytes": 23038,
             "medianSkippedBytes": 126025,
             "medianTransferredBytes": 240868,
-            "medianPeakTaskMemoryBytes": 7733248,
-            "medianCpuTimeMicros": 92886,
+            "medianPeakTaskMemoryBytes": 2883584,
+            "medianCpuTimeMicros": 81428,
             "resultRows": 10000
           },
           "workerPartialAggregate": {
             "format": "parquet",
             "repetitions": 5,
-            "p50Ms": 43,
-            "p95Ms": 49,
+            "p50Ms": 69,
+            "p95Ms": 96,
             "medianScannedBytes": 23038,
             "medianSkippedBytes": 126025,
             "medianTransferredBytes": 3266,
-            "medianPeakTaskMemoryBytes": 3014656,
-            "medianCpuTimeMicros": 57890,
+            "medianPeakTaskMemoryBytes": 3035136,
+            "medianCpuTimeMicros": 54549,
             "resultRows": 20
           },
           "transferReduction": 0.9864407061128917
@@ -149,12 +149,12 @@
         "local"
       ],
       "queries": 3,
-      "ordersId": "a3b5e961-2074-474a-8240-c60c635513db",
-      "customersId": "b50f7fd5-1a40-4752-be64-256d274a39a4"
+      "ordersId": "83e0c2f2-934f-439c-9550-19f4d4057989",
+      "customersId": "5ceefac7-96b9-4e53-94b8-fccb4b522e74"
     },
     "approximation": {
       "status": "passed",
-      "datasetId": "032ca830-cb75-4575-856c-65013319a69d",
+      "datasetId": "11f4c32a-da6b-43a7-a90f-9fcf3a839dc1",
       "rows": 60000,
       "distributions": {
         "uniform": {
@@ -207,46 +207,46 @@
       },
       "runs": [
         {
-          "runId": "930cc40f-a5ee-4e31-a2fb-066bdf8d423c",
+          "runId": "36dfad26-b9f6-4b63-a0f6-d841b3b9bb0b",
           "operation": "approx_count_distinct",
           "stateBytes": 5508,
           "transferredBytes": 16524,
-          "executionTimeMs": 130
+          "executionTimeMs": 112
         },
         {
-          "runId": "7c95e696-ff18-4498-a870-4cc6cd75d1f4",
+          "runId": "8eae4434-58da-4458-8624-415ab6de2d20",
           "operation": "approx_count_distinct",
           "stateBytes": 5508,
           "transferredBytes": 16524,
-          "executionTimeMs": 109
+          "executionTimeMs": 98
         },
         {
-          "runId": "976654a2-0a7b-4f04-ab34-a02d01196c03",
+          "runId": "116a30b6-958e-4b7f-8928-daab8e5d546d",
           "operation": "approx_percentile",
           "stateBytes": 6715,
           "transferredBytes": 19159,
-          "executionTimeMs": 39
+          "executionTimeMs": 52
         },
         {
-          "runId": "893c830c-2680-4464-a89e-3de9fb85895b",
+          "runId": "6d7e3a14-ac1d-4761-8afa-530d14154da8",
           "operation": "heavy_hitters",
           "stateBytes": 21557,
           "transferredBytes": 63813,
-          "executionTimeMs": 497
+          "executionTimeMs": 484
         },
         {
-          "runId": "d49f2374-cfc6-4147-8414-9a56d89136ff",
+          "runId": "4a339dc8-59e7-4e8e-9896-195b338e67f8",
           "operation": "sample",
-          "stateBytes": 3514,
-          "transferredBytes": 10542,
-          "executionTimeMs": 151
+          "stateBytes": 3525,
+          "transferredBytes": 10550,
+          "executionTimeMs": 146
         },
         {
-          "runId": "4080c006-a67a-46d8-95fd-0f4b209682bc",
+          "runId": "e599c4be-2ff4-4ac6-a7db-c0b908b23040",
           "operation": "sample",
-          "stateBytes": 3514,
-          "transferredBytes": 10542,
-          "executionTimeMs": 135
+          "stateBytes": 3525,
+          "transferredBytes": 10550,
+          "executionTimeMs": 157
         }
       ]
     },
@@ -254,7 +254,7 @@
       "status": "passed",
       "seed": "deterministic modular TPC-H-derived generator",
       "rows": 600000,
-      "datasetId": "58edd2e3-d654-46e0-96c2-438268ba460b",
+      "datasetId": "a45e8690-e95c-4fd4-8245-97427eadf3ec",
       "partitions": 8,
       "provisionedWorkers": 8,
       "warmupsPerPoint": 1,
@@ -268,12 +268,12 @@
             {
               "workers": 1,
               "repetitions": 5,
-              "p50Ms": 87,
-              "p95Ms": 96,
+              "p50Ms": 141,
+              "p95Ms": 159,
               "medianScannedBytes": 3884202,
               "medianTransferredBytes": 6640,
-              "medianPeakTaskMemoryBytes": 35606528,
-              "medianCpuTimeMicros": 1512244,
+              "medianPeakTaskMemoryBytes": 31928320,
+              "medianCpuTimeMicros": 1414972,
               "workersUsed": 1,
               "checksum": "cde972eabec3089c472fdfd1286cff9454a2cf75f8420ee98c5be3a663cff943",
               "speedup": 1,
@@ -282,44 +282,44 @@
             {
               "workers": 2,
               "repetitions": 5,
-              "p50Ms": 74,
-              "p95Ms": 144,
+              "p50Ms": 87,
+              "p95Ms": 118,
               "medianScannedBytes": 3884202,
               "medianTransferredBytes": 6640,
-              "medianPeakTaskMemoryBytes": 18255872,
-              "medianCpuTimeMicros": 987508,
+              "medianPeakTaskMemoryBytes": 14725120,
+              "medianCpuTimeMicros": 915814,
               "workersUsed": 2,
               "checksum": "cde972eabec3089c472fdfd1286cff9454a2cf75f8420ee98c5be3a663cff943",
-              "speedup": 1.1756756756756757,
-              "parallelEfficiency": 0.5878378378378378
+              "speedup": 1.6206896551724137,
+              "parallelEfficiency": 0.8103448275862069
             },
             {
               "workers": 4,
               "repetitions": 5,
-              "p50Ms": 65,
-              "p95Ms": 88,
+              "p50Ms": 85,
+              "p95Ms": 114,
               "medianScannedBytes": 3884202,
               "medianTransferredBytes": 6640,
-              "medianPeakTaskMemoryBytes": 8310784,
-              "medianCpuTimeMicros": 484765,
+              "medianPeakTaskMemoryBytes": 8933376,
+              "medianCpuTimeMicros": 504193,
               "workersUsed": 4,
               "checksum": "cde972eabec3089c472fdfd1286cff9454a2cf75f8420ee98c5be3a663cff943",
-              "speedup": 1.3384615384615384,
-              "parallelEfficiency": 0.3346153846153846
+              "speedup": 1.6588235294117648,
+              "parallelEfficiency": 0.4147058823529412
             },
             {
               "workers": 8,
               "repetitions": 5,
-              "p50Ms": 61,
-              "p95Ms": 77,
+              "p50Ms": 71,
+              "p95Ms": 88,
               "medianScannedBytes": 3884202,
               "medianTransferredBytes": 6640,
-              "medianPeakTaskMemoryBytes": 4722688,
-              "medianCpuTimeMicros": 272578,
+              "medianPeakTaskMemoryBytes": 4542464,
+              "medianCpuTimeMicros": 277232,
               "workersUsed": 8,
               "checksum": "cde972eabec3089c472fdfd1286cff9454a2cf75f8420ee98c5be3a663cff943",
-              "speedup": 1.4262295081967213,
-              "parallelEfficiency": 0.17827868852459017
+              "speedup": 1.9859154929577465,
+              "parallelEfficiency": 0.2482394366197183
             }
           ]
         },
@@ -331,12 +331,12 @@
             {
               "workers": 1,
               "repetitions": 5,
-              "p50Ms": 73,
-              "p95Ms": 98,
+              "p50Ms": 102,
+              "p95Ms": 116,
               "medianScannedBytes": 3884202,
               "medianTransferredBytes": 968,
-              "medianPeakTaskMemoryBytes": 8257536,
-              "medianCpuTimeMicros": 1222841,
+              "medianPeakTaskMemoryBytes": 5373952,
+              "medianCpuTimeMicros": 1217697,
               "workersUsed": 1,
               "checksum": "65fb6cfa610db6b54fe741617b78736bb6b9b94997405a7a141bdf6449b5d4c6",
               "speedup": 1,
@@ -345,44 +345,44 @@
             {
               "workers": 2,
               "repetitions": 5,
-              "p50Ms": 72,
-              "p95Ms": 75,
+              "p50Ms": 73,
+              "p95Ms": 91,
               "medianScannedBytes": 3884202,
               "medianTransferredBytes": 968,
-              "medianPeakTaskMemoryBytes": 7471104,
-              "medianCpuTimeMicros": 839599,
+              "medianPeakTaskMemoryBytes": 10530816,
+              "medianCpuTimeMicros": 759922,
               "workersUsed": 2,
               "checksum": "65fb6cfa610db6b54fe741617b78736bb6b9b94997405a7a141bdf6449b5d4c6",
-              "speedup": 1.0138888888888888,
-              "parallelEfficiency": 0.5069444444444444
+              "speedup": 1.3972602739726028,
+              "parallelEfficiency": 0.6986301369863014
             },
             {
               "workers": 4,
               "repetitions": 5,
-              "p50Ms": 61,
-              "p95Ms": 64,
+              "p50Ms": 72,
+              "p95Ms": 83,
               "medianScannedBytes": 3884202,
               "medianTransferredBytes": 968,
-              "medianPeakTaskMemoryBytes": 8359936,
-              "medianCpuTimeMicros": 412291,
+              "medianPeakTaskMemoryBytes": 8187904,
+              "medianCpuTimeMicros": 430839,
               "workersUsed": 4,
               "checksum": "65fb6cfa610db6b54fe741617b78736bb6b9b94997405a7a141bdf6449b5d4c6",
-              "speedup": 1.1967213114754098,
-              "parallelEfficiency": 0.29918032786885246
+              "speedup": 1.4166666666666667,
+              "parallelEfficiency": 0.3541666666666667
             },
             {
               "workers": 8,
               "repetitions": 5,
-              "p50Ms": 56,
-              "p95Ms": 66,
+              "p50Ms": 60,
+              "p95Ms": 79,
               "medianScannedBytes": 3884202,
               "medianTransferredBytes": 968,
-              "medianPeakTaskMemoryBytes": 4427776,
-              "medianCpuTimeMicros": 227173,
+              "medianPeakTaskMemoryBytes": 4546560,
+              "medianCpuTimeMicros": 215722,
               "workersUsed": 8,
               "checksum": "65fb6cfa610db6b54fe741617b78736bb6b9b94997405a7a141bdf6449b5d4c6",
-              "speedup": 1.3035714285714286,
-              "parallelEfficiency": 0.16294642857142858
+              "speedup": 1.7,
+              "parallelEfficiency": 0.2125
             }
           ]
         }
@@ -400,9 +400,9 @@
       },
       "skewed": {
         "static": {
-          "p50Ms": 3748,
-          "p95Ms": 3865,
-          "medianCriticalTaskMs": 2397,
+          "p50Ms": 3278,
+          "p95Ms": 3632,
+          "medianCriticalTaskMs": 2332,
           "medianTransferredBytes": 544613,
           "checksum": "643abca73aca2f8e55976e9f0abd5a91fabcca002facd7a45956c31053521ce9",
           "plan": {
@@ -429,8 +429,40 @@
               "bloomBytes": 43744,
               "hotBuckets": [],
               "bytesWritten": 539553,
-              "executionTimeMs": 1225,
+              "executionTimeMs": 939,
               "logicalPartitions": 8
+            },
+            "mapreduce": {
+              "combiner": {
+                "mode": "merge-safe partial aggregation",
+                "states": {
+                  "total": [
+                    "sum",
+                    "count"
+                  ],
+                  "orders": [
+                    "count",
+                    "count"
+                  ]
+                },
+                "enabled": true,
+                "operator": "LocalCombiner"
+              },
+              "operators": [
+                {
+                  "id": "partition_map",
+                  "operator": "JoinMap"
+                },
+                {
+                  "id": "local_combiner",
+                  "enabled": true,
+                  "operator": "LocalCombiner"
+                },
+                {
+                  "id": "coordinator_reduce",
+                  "operator": "FinalReduce"
+                }
+              ]
             },
             "tableName": "orders",
             "workerSql": "SELECT \"c\".\"region\" AS \"region\", COUNT(*) AS \"__rows\", COUNT(*) AS \"__c0\", SUM(\"o\".\"amount\") AS \"__v1\", COUNT(\"o\".\"amount\") AS \"__c1\" FROM \"o\" INNER JOIN \"c\" ON \"o\".\"customer_id\" = \"c\".\"id\" GROUP BY \"c\".\"region\"",
@@ -460,7 +492,7 @@
               "executions": 5,
               "emaResultRows": 4,
               "hotBucketCount": 0,
-              "emaStragglerRatio": 27.667453406775874,
+              "emaStragglerRatio": 27.854857007076774,
               "recommendedShuffleBuckets": 8
             },
             "columnReferences": [
@@ -486,13 +518,14 @@
               }
             ],
             "estimatedBuildBytes": 5226,
-            "estimatedProbeBytes": 718861
+            "estimatedProbeBytes": 718861,
+            "workerSqlUncombined": "SELECT \"c\".\"region\" AS \"region\", 1 AS \"__r0\", \"o\".\"amount\" AS \"__r1\" FROM \"o\" INNER JOIN \"c\" ON \"o\".\"customer_id\" = \"c\".\"id\""
           }
         },
         "adaptive": {
-          "p50Ms": 3116,
-          "p95Ms": 3422,
-          "medianCriticalTaskMs": 1576,
+          "p50Ms": 3168,
+          "p95Ms": 3489,
+          "medianCriticalTaskMs": 1902,
           "medianTransferredBytes": 549023,
           "checksum": "643abca73aca2f8e55976e9f0abd5a91fabcca002facd7a45956c31053521ce9",
           "plan": {
@@ -525,8 +558,40 @@
                 }
               ],
               "bytesWritten": 539553,
-              "executionTimeMs": 1407,
+              "executionTimeMs": 1155,
               "logicalPartitions": 15
+            },
+            "mapreduce": {
+              "combiner": {
+                "mode": "merge-safe partial aggregation",
+                "states": {
+                  "total": [
+                    "sum",
+                    "count"
+                  ],
+                  "orders": [
+                    "count",
+                    "count"
+                  ]
+                },
+                "enabled": true,
+                "operator": "LocalCombiner"
+              },
+              "operators": [
+                {
+                  "id": "partition_map",
+                  "operator": "JoinMap"
+                },
+                {
+                  "id": "local_combiner",
+                  "enabled": true,
+                  "operator": "LocalCombiner"
+                },
+                {
+                  "id": "coordinator_reduce",
+                  "operator": "FinalReduce"
+                }
+              ]
             },
             "tableName": "orders",
             "workerSql": "SELECT \"c\".\"region\" AS \"region\", COUNT(*) AS \"__rows\", COUNT(*) AS \"__c0\", SUM(\"o\".\"amount\") AS \"__v1\", COUNT(\"o\".\"amount\") AS \"__c1\" FROM \"o\" INNER JOIN \"c\" ON \"o\".\"customer_id\" = \"c\".\"id\" GROUP BY \"c\".\"region\"",
@@ -556,7 +621,7 @@
               "executions": 11,
               "emaResultRows": 4,
               "hotBucketCount": 1,
-              "emaStragglerRatio": 5.986459699931687,
+              "emaStragglerRatio": 6.382939096345003,
               "recommendedShuffleBuckets": 8
             },
             "columnReferences": [
@@ -582,16 +647,22 @@
               }
             ],
             "estimatedBuildBytes": 5226,
-            "estimatedProbeBytes": 718861
+            "estimatedProbeBytes": 718861,
+            "workerSqlUncombined": "SELECT \"c\".\"region\" AS \"region\", 1 AS \"__r0\", \"o\".\"amount\" AS \"__r1\" FROM \"o\" INNER JOIN \"c\" ON \"o\".\"customer_id\" = \"c\".\"id\""
           }
+        },
+        "adaptiveBenefit": {
+          "p50Latency": true,
+          "criticalTask": true,
+          "transferredBytes": false
         }
       },
       "balanced": {
         "allowedRegression": 0.25,
         "static": {
-          "p50Ms": 1569,
-          "p95Ms": 1658,
-          "medianCriticalTaskMs": 107,
+          "p50Ms": 1554,
+          "p95Ms": 1733,
+          "medianCriticalTaskMs": 92,
           "medianTransferredBytes": 588943,
           "checksum": "bb84dfe72bfc678d5c71725469a4a4153d7fe4bc3bf7486fd4ff346d8de121f8",
           "plan": {
@@ -618,8 +689,40 @@
               "bloomBytes": 43744,
               "hotBuckets": [],
               "bytesWritten": 583844,
-              "executionTimeMs": 1491,
+              "executionTimeMs": 1392,
               "logicalPartitions": 8
+            },
+            "mapreduce": {
+              "combiner": {
+                "mode": "merge-safe partial aggregation",
+                "states": {
+                  "total": [
+                    "sum",
+                    "count"
+                  ],
+                  "orders": [
+                    "count",
+                    "count"
+                  ]
+                },
+                "enabled": true,
+                "operator": "LocalCombiner"
+              },
+              "operators": [
+                {
+                  "id": "partition_map",
+                  "operator": "JoinMap"
+                },
+                {
+                  "id": "local_combiner",
+                  "enabled": true,
+                  "operator": "LocalCombiner"
+                },
+                {
+                  "id": "coordinator_reduce",
+                  "operator": "FinalReduce"
+                }
+              ]
             },
             "tableName": "orders",
             "workerSql": "SELECT \"c\".\"region\" AS \"region\", COUNT(*) AS \"__rows\", COUNT(*) AS \"__c0\", SUM(\"o\".\"amount\") AS \"__v1\", COUNT(\"o\".\"amount\") AS \"__c1\" FROM \"o\" INNER JOIN \"c\" ON \"o\".\"customer_id\" = \"c\".\"id\" GROUP BY \"c\".\"region\"",
@@ -649,7 +752,7 @@
               "executions": 5,
               "emaResultRows": 4,
               "hotBucketCount": 0,
-              "emaStragglerRatio": 1.1273327210202972,
+              "emaStragglerRatio": 1.2001398348243693,
               "recommendedShuffleBuckets": 8
             },
             "columnReferences": [
@@ -675,13 +778,14 @@
               }
             ],
             "estimatedBuildBytes": 5226,
-            "estimatedProbeBytes": 808253
+            "estimatedProbeBytes": 808253,
+            "workerSqlUncombined": "SELECT \"c\".\"region\" AS \"region\", 1 AS \"__r0\", \"o\".\"amount\" AS \"__r1\" FROM \"o\" INNER JOIN \"c\" ON \"o\".\"customer_id\" = \"c\".\"id\""
           }
         },
         "adaptive": {
-          "p50Ms": 1569,
-          "p95Ms": 1740,
-          "medianCriticalTaskMs": 98,
+          "p50Ms": 1553,
+          "p95Ms": 1571,
+          "medianCriticalTaskMs": 93,
           "medianTransferredBytes": 588943,
           "checksum": "bb84dfe72bfc678d5c71725469a4a4153d7fe4bc3bf7486fd4ff346d8de121f8",
           "plan": {
@@ -708,8 +812,40 @@
               "bloomBytes": 43744,
               "hotBuckets": [],
               "bytesWritten": 583844,
-              "executionTimeMs": 1625,
+              "executionTimeMs": 1383,
               "logicalPartitions": 8
+            },
+            "mapreduce": {
+              "combiner": {
+                "mode": "merge-safe partial aggregation",
+                "states": {
+                  "total": [
+                    "sum",
+                    "count"
+                  ],
+                  "orders": [
+                    "count",
+                    "count"
+                  ]
+                },
+                "enabled": true,
+                "operator": "LocalCombiner"
+              },
+              "operators": [
+                {
+                  "id": "partition_map",
+                  "operator": "JoinMap"
+                },
+                {
+                  "id": "local_combiner",
+                  "enabled": true,
+                  "operator": "LocalCombiner"
+                },
+                {
+                  "id": "coordinator_reduce",
+                  "operator": "FinalReduce"
+                }
+              ]
             },
             "tableName": "orders",
             "workerSql": "SELECT \"c\".\"region\" AS \"region\", COUNT(*) AS \"__rows\", COUNT(*) AS \"__c0\", SUM(\"o\".\"amount\") AS \"__v1\", COUNT(\"o\".\"amount\") AS \"__c1\" FROM \"o\" INNER JOIN \"c\" ON \"o\".\"customer_id\" = \"c\".\"id\" GROUP BY \"c\".\"region\"",
@@ -739,7 +875,7 @@
               "executions": 11,
               "emaResultRows": 4,
               "hotBucketCount": 0,
-              "emaStragglerRatio": 1.0907801759297837,
+              "emaStragglerRatio": 1.156049135949748,
               "recommendedShuffleBuckets": 8
             },
             "columnReferences": [
@@ -765,10 +901,1281 @@
               }
             ],
             "estimatedBuildBytes": 5226,
-            "estimatedProbeBytes": 808253
+            "estimatedProbeBytes": 808253,
+            "workerSqlUncombined": "SELECT \"c\".\"region\" AS \"region\", 1 AS \"__r0\", \"o\".\"amount\" AS \"__r1\" FROM \"o\" INNER JOIN \"c\" ON \"o\".\"customer_id\" = \"c\".\"id\""
           }
         }
+      },
+      "performanceGate": {
+        "enforced": true,
+        "reason": "reference benchmark mode"
       }
+    },
+    "mapreduceRefinements": {
+      "status": "passed",
+      "rows": 30000,
+      "partitions": 8,
+      "measuredRuns": 3,
+      "stragglerRuns": 5,
+      "combiner": [
+        {
+          "sql": "SELECT region, COUNT(*) AS rows, SUM(amount) AS total, AVG(amount) AS average FROM mapreduce_lab GROUP BY region ORDER BY region ASC",
+          "checksum": "262fac775618c21cb8afe69a779d111cd2515d8ad764d0b61fcc4bbcacc4686e",
+          "enabled": {
+            "p50Ms": 65,
+            "medianTransferredBytes": 5840,
+            "evidenceJobId": "dc6897aa-6c0a-4d59-8bcc-869c83a11723"
+          },
+          "disabled": {
+            "p50Ms": 181,
+            "medianTransferredBytes": 5033596,
+            "evidenceJobId": "e75576da-71f3-4e83-9dd9-e34b1f13959b"
+          },
+          "transferReduction": 0.9988397956451014
+        },
+        {
+          "sql": "SELECT category, COUNT(*) AS rows, MIN(amount) AS minimum, MAX(amount) AS maximum FROM mapreduce_lab GROUP BY category ORDER BY category ASC",
+          "checksum": "de9f41236e6d6f1fa75a8dadca33a8c8c98bf171fc55646fd6f1b8ab7708432c",
+          "enabled": {
+            "p50Ms": 58,
+            "medianTransferredBytes": 55472,
+            "evidenceJobId": "8f202b0d-a9b8-4f0b-8666-816f7c27bca8"
+          },
+          "disabled": {
+            "p50Ms": 179,
+            "medianTransferredBytes": 5108596,
+            "evidenceJobId": "fb452b6a-0c9e-4ceb-9eff-b0852d3de0d0"
+          },
+          "transferReduction": 0.9891414392525852
+        },
+        {
+          "sql": "SELECT COUNT(*) AS rows, SUM(amount) AS total, AVG(amount) AS average FROM mapreduce_lab WHERE amount >= 250",
+          "checksum": "0943828d7359c5b551ae7c1a96829a6d0ff86522eea2c3c57ae977fed979a6e8",
+          "enabled": {
+            "p50Ms": 58,
+            "medianTransferredBytes": 1320,
+            "evidenceJobId": "cf2a7fe3-5c69-4749-9b13-d247e175cb31"
+          },
+          "disabled": {
+            "p50Ms": 132,
+            "medianTransferredBytes": 3244396,
+            "evidenceJobId": "b051316e-13cb-4333-805a-bc2ab22eae8b"
+          },
+          "transferReduction": 0.9995931446099675
+        }
+      ],
+      "partitionExplorer": {
+        "balanced": {
+          "datasetId": "0ea6265a-6781-4a4f-9a98-6a0c754fbbf3",
+          "column": "id",
+          "function": "duckdb_hash(id) mod 8",
+          "buckets": 8,
+          "totalRows": 30000,
+          "totalInputBytes": 53966,
+          "byteMethod": "catalog Parquet bytes allocated in proportion to exact per-partition bucket rows",
+          "coefficientOfVariation": 0.016561803444472264,
+          "skewRatio": 1.0322666666666667,
+          "hotBuckets": [],
+          "distribution": [
+            {
+              "bucket": 0,
+              "rows": 3699,
+              "estimatedBytes": 6655,
+              "share": 0.1233
+            },
+            {
+              "bucket": 1,
+              "rows": 3727,
+              "estimatedBytes": 6731,
+              "share": 0.12423333333333333
+            },
+            {
+              "bucket": 2,
+              "rows": 3777,
+              "estimatedBytes": 6792,
+              "share": 0.1259
+            },
+            {
+              "bucket": 3,
+              "rows": 3718,
+              "estimatedBytes": 6677,
+              "share": 0.12393333333333334
+            },
+            {
+              "bucket": 4,
+              "rows": 3820,
+              "estimatedBytes": 6842,
+              "share": 0.12733333333333333
+            },
+            {
+              "bucket": 5,
+              "rows": 3685,
+              "estimatedBytes": 6633,
+              "share": 0.12283333333333334
+            },
+            {
+              "bucket": 6,
+              "rows": 3871,
+              "estimatedBytes": 6951,
+              "share": 0.12903333333333333
+            },
+            {
+              "bucket": 7,
+              "rows": 3703,
+              "estimatedBytes": 6685,
+              "share": 0.12343333333333334
+            }
+          ]
+        },
+        "skewed": {
+          "datasetId": "0ea6265a-6781-4a4f-9a98-6a0c754fbbf3",
+          "column": "region",
+          "function": "duckdb_hash(region) mod 8",
+          "buckets": 8,
+          "totalRows": 30000,
+          "totalInputBytes": 53966,
+          "byteMethod": "catalog Parquet bytes allocated in proportion to exact per-partition bucket rows",
+          "coefficientOfVariation": 1.414213562373095,
+          "skewRatio": 4,
+          "hotBuckets": [
+            {
+              "bucket": 0,
+              "rows": 15000,
+              "estimatedBytes": 26981,
+              "share": 0.5
+            },
+            {
+              "bucket": 2,
+              "rows": 7500,
+              "estimatedBytes": 13487,
+              "share": 0.25
+            },
+            {
+              "bucket": 6,
+              "rows": 7500,
+              "estimatedBytes": 13498,
+              "share": 0.25
+            }
+          ],
+          "distribution": [
+            {
+              "bucket": 0,
+              "rows": 15000,
+              "estimatedBytes": 26981,
+              "share": 0.5
+            },
+            {
+              "bucket": 1,
+              "rows": 0,
+              "estimatedBytes": 0,
+              "share": 0
+            },
+            {
+              "bucket": 2,
+              "rows": 7500,
+              "estimatedBytes": 13487,
+              "share": 0.25
+            },
+            {
+              "bucket": 3,
+              "rows": 0,
+              "estimatedBytes": 0,
+              "share": 0
+            },
+            {
+              "bucket": 4,
+              "rows": 0,
+              "estimatedBytes": 0,
+              "share": 0
+            },
+            {
+              "bucket": 5,
+              "rows": 0,
+              "estimatedBytes": 0,
+              "share": 0
+            },
+            {
+              "bucket": 6,
+              "rows": 7500,
+              "estimatedBytes": 13498,
+              "share": 0.25
+            },
+            {
+              "bucket": 7,
+              "rows": 0,
+              "estimatedBytes": 0,
+              "share": 0
+            }
+          ]
+        }
+      },
+      "explain": {
+        "mapreduce": {
+          "combiner": false,
+          "combiner_operator": {
+            "name": "LocalCombiner",
+            "enabled": false,
+            "states": {
+              "rows": [
+                "count",
+                "count"
+              ],
+              "total": [
+                "sum",
+                "count"
+              ],
+              "average": [
+                "sum",
+                "count"
+              ]
+            }
+          },
+          "mapper_output": "one mergeable aggregate state per input row",
+          "partition_function": "physical dataset partitions",
+          "speculative_execution": "enabled; threshold=max(250ms, 1.5× sibling p75)"
+        },
+        "costModel": {
+          "estimated_input_bytes": 53966,
+          "estimated_shuffle_bytes": 0,
+          "estimated_combiner_output_rows": 30000,
+          "equation": "cost = scan_bytes + shuffle_bytes + combiner_output_rows × state_width",
+          "caveat": "Static estimate from catalog metadata; Query Autopsy reports measured scan, transfer, CPU, memory, and critical path."
+        }
+      },
+      "straggler": {
+        "baseline": {
+          "p50Ms": 958,
+          "p95Ms": 967,
+          "p99Ms": 967,
+          "checksum": "262fac775618c21cb8afe69a779d111cd2515d8ad764d0b61fcc4bbcacc4686e"
+        },
+        "speculative": {
+          "p50Ms": 301,
+          "p95Ms": 309,
+          "p99Ms": 309,
+          "checksum": "262fac775618c21cb8afe69a779d111cd2515d8ad764d0b61fcc4bbcacc4686e"
+        },
+        "p99Improvement": 0.6804550155118925
+      }
+    },
+    "sparkAbstractions": {
+      "status": "passed",
+      "rows": 60000,
+      "partitions": 8,
+      "lazyPlanning": {
+        "samples": 20,
+        "p95Ms": 7,
+        "thresholdMs": 50
+      },
+      "cache": {
+        "coldMs": 60,
+        "warmMs": 53,
+        "coldHits": 0,
+        "warmHits": 8
+      },
+      "cacheLevels": [
+        {
+          "cacheLevel": "MEMORY",
+          "coldHits": 0,
+          "warmHits": 8,
+          "checksum": "66e01812e677acf2a8f3d5b0020e334f1554571d1739cf1e35f9ca6f2f5ce776"
+        },
+        {
+          "cacheLevel": "DISK",
+          "coldHits": 0,
+          "warmHits": 8,
+          "checksum": "66e01812e677acf2a8f3d5b0020e334f1554571d1739cf1e35f9ca6f2f5ce776"
+        },
+        {
+          "cacheLevel": "MEMORY_AND_DISK",
+          "coldHits": 8,
+          "warmHits": 8,
+          "checksum": "66e01812e677acf2a8f3d5b0020e334f1554571d1739cf1e35f9ca6f2f5ce776"
+        }
+      ],
+      "cacheEviction": {
+        "evictionsBefore": 7,
+        "evictionsAfter": 14,
+        "boundedWorkers": [
+          {
+            "id": "worker-1",
+            "bytes": 831882,
+            "evictions": 7
+          }
+        ]
+      },
+      "broadcastCache": {
+        "workers": 4,
+        "coldHits": 0,
+        "warmHits": 8,
+        "leakedPins": 0,
+        "checksum": "f1e8e95cb05912852e616c44b3fa06266f1cb6943031fdf3345b33f7fb02bbe9"
+      },
+      "accumulators": [
+        {
+          "name": "bytes_scanned",
+          "value": 2206266,
+          "committed_partitions": 8
+        },
+        {
+          "name": "bytes_shuffled_total",
+          "value": 0,
+          "committed_partitions": 8
+        },
+        {
+          "name": "cpu_time_micros",
+          "value": 160470,
+          "committed_partitions": 8
+        },
+        {
+          "name": "rows_passed_filter",
+          "value": 60000,
+          "committed_partitions": 8
+        },
+        {
+          "name": "rows_returned",
+          "value": 32,
+          "committed_partitions": 8
+        },
+        {
+          "name": "rows_scanned",
+          "value": 60000,
+          "committed_partitions": 8
+        }
+      ],
+      "speculativeAccumulators": {
+        "attempts": 9,
+        "winners": 8,
+        "values": [
+          {
+            "name": "bytes_scanned",
+            "value": 2206266,
+            "committed_partitions": 8
+          },
+          {
+            "name": "bytes_shuffled_total",
+            "value": 0,
+            "committed_partitions": 8
+          },
+          {
+            "name": "cpu_time_micros",
+            "value": 210297,
+            "committed_partitions": 8
+          },
+          {
+            "name": "rows_passed_filter",
+            "value": 60000,
+            "committed_partitions": 8
+          },
+          {
+            "name": "rows_returned",
+            "value": 32,
+            "committed_partitions": 8
+          },
+          {
+            "name": "rows_scanned",
+            "value": 60000,
+            "committed_partitions": 8
+          }
+        ]
+      },
+      "lineage": {
+        "nodes": 109,
+        "edges": 108,
+        "recomputedPartitions": 1,
+        "partitionChecksumMatch": true,
+        "ancestor": {
+          "id": "008598b9-8191-40c0-83c6-33f9081dd632",
+          "kind": "source",
+          "operator": "DATASET_SOURCE",
+          "datasetId": "3265f79e-f44e-4bc0-80f2-4fcd8f2a5d0d"
+        },
+        "replayPath": [
+          "9fc8df37-aef1-441c-86a3-b9323145ad62",
+          "e5d15896-0bbc-4448-8ad0-5a4feba58eee",
+          "008598b9-8191-40c0-83c6-33f9081dd632"
+        ],
+        "workerFailure": "worker-1 SIGKILL before replay"
+      },
+      "materializedDatasetId": "5c6bebce-c17e-43ae-ab17-e525ea096df5"
+    },
+    "costAnalyzerReplay": {
+      "status": "passed",
+      "canonicalQueries": 5,
+      "datasetSnapshot": "1f0b8fa7-1c96-4854-8e49-b962dcb3410c",
+      "autopsies": [
+        {
+          "jobId": "ecd6ec49-e915-4709-b9fb-c0c8958304a2",
+          "bottleneck": "balanced",
+          "costDomains": [
+            {
+              "name": "storage",
+              "value": 76584,
+              "unit": "bytes",
+              "evidence": "worker bytes read after row-group pruning"
+            },
+            {
+              "name": "communication",
+              "value": 4880,
+              "unit": "bytes",
+              "evidence": "serialized worker-to-coordinator payload"
+            },
+            {
+              "name": "computation",
+              "value": 194854,
+              "unit": "microseconds",
+              "evidence": "worker process CPU time"
+            },
+            {
+              "name": "waiting",
+              "value": 76146,
+              "unit": "microseconds",
+              "evidence": "task wall time minus measured worker CPU; includes I/O and scheduler wait"
+            },
+            {
+              "name": "memory",
+              "value": 3002368,
+              "unit": "bytes",
+              "evidence": "largest task RSS delta"
+            },
+            {
+              "name": "spill",
+              "value": 0,
+              "unit": "bytes",
+              "evidence": "bytes spilled under worker memory reservation"
+            },
+            {
+              "name": "recomputation",
+              "value": 0,
+              "unit": "microseconds",
+              "evidence": "CPU consumed by failed attempts"
+            }
+          ],
+          "topOperators": [
+            {
+              "operator": "partition_scan",
+              "taskId": "4d334dea-ffe2-43c4-a8d6-c93a67256adc",
+              "workerId": "worker-3",
+              "attempt": 1,
+              "winner": true,
+              "durationMs": 39,
+              "scannedRows": 5000,
+              "producedRows": 4,
+              "scannedBytes": 9077,
+              "wireBytes": 610,
+              "cpuTimeMicros": 26542,
+              "peakMemoryBytes": 2850816,
+              "spilledBytes": 0,
+              "rowsPerSecond": 128205.1282051282,
+              "bytesPerSecond": 232743.58974358975
+            },
+            {
+              "operator": "partition_scan",
+              "taskId": "c162900d-af8a-4f91-994d-0bd4d678cf40",
+              "workerId": "worker-20e3a2607cd0",
+              "attempt": 1,
+              "winner": true,
+              "durationMs": 39,
+              "scannedRows": 5000,
+              "producedRows": 4,
+              "scannedBytes": 9077,
+              "wireBytes": 610,
+              "cpuTimeMicros": 26556,
+              "peakMemoryBytes": 3002368,
+              "spilledBytes": 0,
+              "rowsPerSecond": 128205.1282051282,
+              "bytesPerSecond": 232743.58974358975
+            },
+            {
+              "operator": "partition_scan",
+              "taskId": "0d1c9b12-943f-465a-8edc-7f3937fa0953",
+              "workerId": "worker-2",
+              "attempt": 1,
+              "winner": true,
+              "durationMs": 36,
+              "scannedRows": 5000,
+              "producedRows": 4,
+              "scannedBytes": 9080,
+              "wireBytes": 610,
+              "cpuTimeMicros": 27942,
+              "peakMemoryBytes": 1687552,
+              "spilledBytes": 0,
+              "rowsPerSecond": 138888.88888888888,
+              "bytesPerSecond": 252222.22222222222
+            }
+          ],
+          "suggestions": [
+            "1 attempt(s) failed (trigger >0); inspect failure lineage before tightening deadlines.",
+            "Mean cardinality error was 99.9% (trigger >50%); refresh statistics or retain runtime feedback."
+          ]
+        },
+        {
+          "jobId": "6d21da22-5311-4e66-bb74-a8c1b9484a3b",
+          "bottleneck": "network_shuffle",
+          "costDomains": [
+            {
+              "name": "storage",
+              "value": 76584,
+              "unit": "bytes",
+              "evidence": "worker bytes read after row-group pruning"
+            },
+            {
+              "name": "communication",
+              "value": 60256,
+              "unit": "bytes",
+              "evidence": "serialized worker-to-coordinator payload"
+            },
+            {
+              "name": "computation",
+              "value": 178807,
+              "unit": "microseconds",
+              "evidence": "worker process CPU time"
+            },
+            {
+              "name": "waiting",
+              "value": 66193,
+              "unit": "microseconds",
+              "evidence": "task wall time minus measured worker CPU; includes I/O and scheduler wait"
+            },
+            {
+              "name": "memory",
+              "value": 3284992,
+              "unit": "bytes",
+              "evidence": "largest task RSS delta"
+            },
+            {
+              "name": "spill",
+              "value": 0,
+              "unit": "bytes",
+              "evidence": "bytes spilled under worker memory reservation"
+            },
+            {
+              "name": "recomputation",
+              "value": 0,
+              "unit": "microseconds",
+              "evidence": "CPU consumed by failed attempts"
+            }
+          ],
+          "topOperators": [
+            {
+              "operator": "partition_scan",
+              "taskId": "eaea3da8-d513-46ce-92db-80e4c98e99eb",
+              "workerId": "worker-462f712a4e33",
+              "attempt": 1,
+              "winner": true,
+              "durationMs": 35,
+              "scannedRows": 5000,
+              "producedRows": 50,
+              "scannedBytes": 9077,
+              "wireBytes": 7532,
+              "cpuTimeMicros": 26637,
+              "peakMemoryBytes": 3223552,
+              "spilledBytes": 0,
+              "rowsPerSecond": 142857.14285714287,
+              "bytesPerSecond": 259342.85714285713
+            },
+            {
+              "operator": "partition_scan",
+              "taskId": "29b2efa5-c9d2-4564-838d-30d4bde839f3",
+              "workerId": "worker-20e3a2607cd0",
+              "attempt": 1,
+              "winner": true,
+              "durationMs": 33,
+              "scannedRows": 5000,
+              "producedRows": 50,
+              "scannedBytes": 9077,
+              "wireBytes": 7532,
+              "cpuTimeMicros": 25388,
+              "peakMemoryBytes": 3121152,
+              "spilledBytes": 0,
+              "rowsPerSecond": 151515.15151515152,
+              "bytesPerSecond": 275060.6060606061
+            },
+            {
+              "operator": "partition_scan",
+              "taskId": "c421fc8d-a3f3-4b06-b3cc-2e784b3886c1",
+              "workerId": "worker-26cd5e0ec95c",
+              "attempt": 1,
+              "winner": true,
+              "durationMs": 32,
+              "scannedRows": 5000,
+              "producedRows": 50,
+              "scannedBytes": 9080,
+              "wireBytes": 7532,
+              "cpuTimeMicros": 24875,
+              "peakMemoryBytes": 2809856,
+              "spilledBytes": 0,
+              "rowsPerSecond": 156250,
+              "bytesPerSecond": 283750
+            }
+          ],
+          "suggestions": [
+            "1 attempt(s) failed (trigger >0); inspect failure lineage before tightening deadlines.",
+            "Wire/scan ratio was 0.79 (trigger >0.50); add projection, a combiner, or a semi-join filter.",
+            "Mean cardinality error was 99.0% (trigger >50%); refresh statistics or retain runtime feedback."
+          ]
+        },
+        {
+          "jobId": "171c86a2-2f40-4f4c-b01a-945fa1789e57",
+          "bottleneck": "straggler",
+          "costDomains": [
+            {
+              "name": "storage",
+              "value": 76584,
+              "unit": "bytes",
+              "evidence": "worker bytes read after row-group pruning"
+            },
+            {
+              "name": "communication",
+              "value": 1008,
+              "unit": "bytes",
+              "evidence": "serialized worker-to-coordinator payload"
+            },
+            {
+              "name": "computation",
+              "value": 205262,
+              "unit": "microseconds",
+              "evidence": "worker process CPU time"
+            },
+            {
+              "name": "waiting",
+              "value": 84738,
+              "unit": "microseconds",
+              "evidence": "task wall time minus measured worker CPU; includes I/O and scheduler wait"
+            },
+            {
+              "name": "memory",
+              "value": 16846848,
+              "unit": "bytes",
+              "evidence": "largest task RSS delta"
+            },
+            {
+              "name": "spill",
+              "value": 0,
+              "unit": "bytes",
+              "evidence": "bytes spilled under worker memory reservation"
+            },
+            {
+              "name": "recomputation",
+              "value": 0,
+              "unit": "microseconds",
+              "evidence": "CPU consumed by failed attempts"
+            }
+          ],
+          "topOperators": [
+            {
+              "operator": "partition_scan",
+              "taskId": "834771ab-0fbb-4644-af8f-0eb7777db098",
+              "workerId": "worker-1",
+              "attempt": 1,
+              "winner": true,
+              "durationMs": 70,
+              "scannedRows": 5000,
+              "producedRows": 1,
+              "scannedBytes": 13034,
+              "wireBytes": 126,
+              "cpuTimeMicros": 54283,
+              "peakMemoryBytes": 16846848,
+              "spilledBytes": 0,
+              "rowsPerSecond": 71428.57142857143,
+              "bytesPerSecond": 186200
+            },
+            {
+              "operator": "partition_scan",
+              "taskId": "224478ff-92ff-4568-b147-409b18b14452",
+              "workerId": "worker-2",
+              "attempt": 1,
+              "winner": true,
+              "durationMs": 35,
+              "scannedRows": 5000,
+              "producedRows": 1,
+              "scannedBytes": 9080,
+              "wireBytes": 126,
+              "cpuTimeMicros": 24166,
+              "peakMemoryBytes": 532480,
+              "spilledBytes": 0,
+              "rowsPerSecond": 142857.14285714287,
+              "bytesPerSecond": 259428.57142857142
+            },
+            {
+              "operator": "partition_scan",
+              "taskId": "2482d7b9-6831-4099-a57b-7cc118a5e6cb",
+              "workerId": "worker-462f712a4e33",
+              "attempt": 1,
+              "winner": true,
+              "durationMs": 34,
+              "scannedRows": 5000,
+              "producedRows": 1,
+              "scannedBytes": 9077,
+              "wireBytes": 126,
+              "cpuTimeMicros": 23045,
+              "peakMemoryBytes": 2056192,
+              "spilledBytes": 0,
+              "rowsPerSecond": 147058.82352941178,
+              "bytesPerSecond": 266970.5882352941
+            }
+          ],
+          "suggestions": [
+            "Observed straggler ratio was 2.06× (trigger ≥2×); retain speculation or split the hot partition.",
+            "Mean cardinality error was 100.0% (trigger >50%); refresh statistics or retain runtime feedback."
+          ]
+        },
+        {
+          "jobId": "17c2cb9f-476b-4605-9f9a-1a163b0f696d",
+          "bottleneck": "network_shuffle",
+          "costDomains": [
+            {
+              "name": "storage",
+              "value": 76584,
+              "unit": "bytes",
+              "evidence": "worker bytes read after row-group pruning"
+            },
+            {
+              "name": "communication",
+              "value": 39600,
+              "unit": "bytes",
+              "evidence": "serialized worker-to-coordinator payload"
+            },
+            {
+              "name": "computation",
+              "value": 266766,
+              "unit": "microseconds",
+              "evidence": "worker process CPU time"
+            },
+            {
+              "name": "waiting",
+              "value": 75234,
+              "unit": "microseconds",
+              "evidence": "task wall time minus measured worker CPU; includes I/O and scheduler wait"
+            },
+            {
+              "name": "memory",
+              "value": 5242880,
+              "unit": "bytes",
+              "evidence": "largest task RSS delta"
+            },
+            {
+              "name": "spill",
+              "value": 0,
+              "unit": "bytes",
+              "evidence": "bytes spilled under worker memory reservation"
+            },
+            {
+              "name": "recomputation",
+              "value": 0,
+              "unit": "microseconds",
+              "evidence": "CPU consumed by failed attempts"
+            }
+          ],
+          "topOperators": [
+            {
+              "operator": "partition_scan",
+              "taskId": "3c97ac07-4f12-4d4e-8841-a7dcc8dbdaf1",
+              "workerId": "worker-462f712a4e33",
+              "attempt": 1,
+              "winner": true,
+              "durationMs": 78,
+              "scannedRows": 5000,
+              "producedRows": 50,
+              "scannedBytes": 9077,
+              "wireBytes": 4968,
+              "cpuTimeMicros": 69830,
+              "peakMemoryBytes": 0,
+              "spilledBytes": 0,
+              "rowsPerSecond": 64102.5641025641,
+              "bytesPerSecond": 116371.79487179487
+            },
+            {
+              "operator": "partition_scan",
+              "taskId": "03ec1c92-eb4e-41c2-9819-e6fbc1fb0ffb",
+              "workerId": "worker-26cd5e0ec95c",
+              "attempt": 1,
+              "winner": true,
+              "durationMs": 43,
+              "scannedRows": 5000,
+              "producedRows": 50,
+              "scannedBytes": 9080,
+              "wireBytes": 4968,
+              "cpuTimeMicros": 28077,
+              "peakMemoryBytes": 2883584,
+              "spilledBytes": 0,
+              "rowsPerSecond": 116279.06976744186,
+              "bytesPerSecond": 211162.7906976744
+            },
+            {
+              "operator": "partition_scan",
+              "taskId": "e5ba698a-d803-4216-bfd2-bb385b0752fa",
+              "workerId": "worker-1",
+              "attempt": 1,
+              "winner": true,
+              "durationMs": 41,
+              "scannedRows": 5000,
+              "producedRows": 50,
+              "scannedBytes": 13034,
+              "wireBytes": 4880,
+              "cpuTimeMicros": 37747,
+              "peakMemoryBytes": 5242880,
+              "spilledBytes": 0,
+              "rowsPerSecond": 121951.21951219512,
+              "bytesPerSecond": 317902.43902439025
+            }
+          ],
+          "suggestions": [
+            "Wire/scan ratio was 0.52 (trigger >0.50); add projection, a combiner, or a semi-join filter.",
+            "Mean cardinality error was 99.0% (trigger >50%); refresh statistics or retain runtime feedback."
+          ]
+        },
+        {
+          "jobId": "e5d72846-e645-469d-bc61-f9fa361f6ff1",
+          "bottleneck": "cpu_parallel",
+          "costDomains": [
+            {
+              "name": "storage",
+              "value": 76584,
+              "unit": "bytes",
+              "evidence": "worker bytes read after row-group pruning"
+            },
+            {
+              "name": "communication",
+              "value": 5392,
+              "unit": "bytes",
+              "evidence": "serialized worker-to-coordinator payload"
+            },
+            {
+              "name": "computation",
+              "value": 183095,
+              "unit": "microseconds",
+              "evidence": "worker process CPU time"
+            },
+            {
+              "name": "waiting",
+              "value": 61905,
+              "unit": "microseconds",
+              "evidence": "task wall time minus measured worker CPU; includes I/O and scheduler wait"
+            },
+            {
+              "name": "memory",
+              "value": 5955584,
+              "unit": "bytes",
+              "evidence": "largest task RSS delta"
+            },
+            {
+              "name": "spill",
+              "value": 0,
+              "unit": "bytes",
+              "evidence": "bytes spilled under worker memory reservation"
+            },
+            {
+              "name": "recomputation",
+              "value": 0,
+              "unit": "microseconds",
+              "evidence": "CPU consumed by failed attempts"
+            }
+          ],
+          "topOperators": [
+            {
+              "operator": "partition_scan",
+              "taskId": "15ef8e61-02d6-44b4-b8a1-89504ccb26c0",
+              "workerId": "worker-51951d9fefd1",
+              "attempt": 1,
+              "winner": true,
+              "durationMs": 34,
+              "scannedRows": 5000,
+              "producedRows": 4,
+              "scannedBytes": 9079,
+              "wireBytes": 674,
+              "cpuTimeMicros": 24823,
+              "peakMemoryBytes": 5111808,
+              "spilledBytes": 0,
+              "rowsPerSecond": 147058.82352941178,
+              "bytesPerSecond": 267029.4117647059
+            },
+            {
+              "operator": "partition_scan",
+              "taskId": "1819dbf1-6a66-41a3-ae66-488f3c1d1d1c",
+              "workerId": "worker-2",
+              "attempt": 1,
+              "winner": true,
+              "durationMs": 33,
+              "scannedRows": 5000,
+              "producedRows": 4,
+              "scannedBytes": 9080,
+              "wireBytes": 674,
+              "cpuTimeMicros": 24588,
+              "peakMemoryBytes": 4980736,
+              "spilledBytes": 0,
+              "rowsPerSecond": 151515.15151515152,
+              "bytesPerSecond": 275151.51515151514
+            },
+            {
+              "operator": "partition_scan",
+              "taskId": "1a7ac532-94a5-4b05-a778-d512467aa9e3",
+              "workerId": "worker-26cd5e0ec95c",
+              "attempt": 1,
+              "winner": true,
+              "durationMs": 33,
+              "scannedRows": 5000,
+              "producedRows": 4,
+              "scannedBytes": 9080,
+              "wireBytes": 674,
+              "cpuTimeMicros": 24553,
+              "peakMemoryBytes": 5242880,
+              "spilledBytes": 0,
+              "rowsPerSecond": 151515.15151515152,
+              "bytesPerSecond": 275151.51515151514
+            }
+          ],
+          "suggestions": [
+            "Mean cardinality error was 99.9% (trigger >50%); refresh statistics or retain runtime feedback."
+          ]
+        }
+      ],
+      "whatIf": [
+        {
+          "jobId": "ecd6ec49-e915-4709-b9fb-c0c8958304a2",
+          "projection": {
+            "model": "evidence-weighted Amdahl projection v1",
+            "baselineExecutionTimeMs": 297,
+            "predictedExecutionTimeMs": 207,
+            "predictedSpeedup": 1.434462972924511,
+            "inputs": {
+              "currentWorkers": 7,
+              "targetWorkers": 8,
+              "currentCombiner": true,
+              "targetCombiner": true,
+              "cacheWarm": true,
+              "targetJoinStrategy": null
+            },
+            "evidence": {
+              "winnerTasks": 8,
+              "measuredTransferBytes": 4880,
+              "measuredScanBytes": 76584
+            },
+            "assumptions": [
+              "85% of observed latency is treated as parallelizable.",
+              "Combiner/cache/join multipliers are directional estimates, not benchmark measurements.",
+              "No queueing or worker contention is modeled."
+            ],
+            "confidence": "medium"
+          },
+          "measured": {
+            "jobId": "cbbe1daa-aaaa-46ee-bf3a-6beb65c3e269",
+            "checksumMatch": true,
+            "baseline": {
+              "latencyMs": 297,
+              "bytes": 4880,
+              "cpuMicros": 194854,
+              "peakMemoryBytes": 3002368
+            },
+            "comparison": {
+              "latencyMs": 294,
+              "bytes": 4880,
+              "cpuMicros": 166247,
+              "peakMemoryBytes": 2928640
+            }
+          }
+        },
+        {
+          "jobId": "6d21da22-5311-4e66-bb74-a8c1b9484a3b",
+          "projection": {
+            "model": "evidence-weighted Amdahl projection v1",
+            "baselineExecutionTimeMs": 302,
+            "predictedExecutionTimeMs": 211,
+            "predictedSpeedup": 1.434462972924511,
+            "inputs": {
+              "currentWorkers": 7,
+              "targetWorkers": 8,
+              "currentCombiner": true,
+              "targetCombiner": true,
+              "cacheWarm": true,
+              "targetJoinStrategy": null
+            },
+            "evidence": {
+              "winnerTasks": 8,
+              "measuredTransferBytes": 60256,
+              "measuredScanBytes": 76584
+            },
+            "assumptions": [
+              "85% of observed latency is treated as parallelizable.",
+              "Combiner/cache/join multipliers are directional estimates, not benchmark measurements.",
+              "No queueing or worker contention is modeled."
+            ],
+            "confidence": "medium"
+          },
+          "measured": {
+            "jobId": "994221c5-8411-4cb9-b4dc-eac75978cc17",
+            "checksumMatch": true,
+            "baseline": {
+              "latencyMs": 302,
+              "bytes": 60256,
+              "cpuMicros": 178807,
+              "peakMemoryBytes": 3284992
+            },
+            "comparison": {
+              "latencyMs": 297,
+              "bytes": 60256,
+              "cpuMicros": 169226,
+              "peakMemoryBytes": 3092480
+            }
+          }
+        },
+        {
+          "jobId": "171c86a2-2f40-4f4c-b01a-945fa1789e57",
+          "projection": {
+            "model": "evidence-weighted Amdahl projection v1",
+            "baselineExecutionTimeMs": 89,
+            "predictedExecutionTimeMs": 69,
+            "predictedSpeedup": 1.282051282051282,
+            "inputs": {
+              "currentWorkers": 8,
+              "targetWorkers": 8,
+              "currentCombiner": true,
+              "targetCombiner": true,
+              "cacheWarm": true,
+              "targetJoinStrategy": null
+            },
+            "evidence": {
+              "winnerTasks": 8,
+              "measuredTransferBytes": 1008,
+              "measuredScanBytes": 76584
+            },
+            "assumptions": [
+              "85% of observed latency is treated as parallelizable.",
+              "Combiner/cache/join multipliers are directional estimates, not benchmark measurements.",
+              "No queueing or worker contention is modeled."
+            ],
+            "confidence": "medium"
+          },
+          "measured": {
+            "jobId": "b561d502-889b-4975-b68f-27c2f6a115f1",
+            "checksumMatch": true,
+            "baseline": {
+              "latencyMs": 89,
+              "bytes": 1008,
+              "cpuMicros": 205262,
+              "peakMemoryBytes": 16846848
+            },
+            "comparison": {
+              "latencyMs": 55,
+              "bytes": 1008,
+              "cpuMicros": 159266,
+              "peakMemoryBytes": 3407872
+            }
+          }
+        },
+        {
+          "jobId": "17c2cb9f-476b-4605-9f9a-1a163b0f696d",
+          "projection": {
+            "model": "evidence-weighted Amdahl projection v1",
+            "baselineExecutionTimeMs": 100,
+            "predictedExecutionTimeMs": 78,
+            "predictedSpeedup": 1.282051282051282,
+            "inputs": {
+              "currentWorkers": 8,
+              "targetWorkers": 8,
+              "currentCombiner": true,
+              "targetCombiner": true,
+              "cacheWarm": true,
+              "targetJoinStrategy": null
+            },
+            "evidence": {
+              "winnerTasks": 8,
+              "measuredTransferBytes": 39600,
+              "measuredScanBytes": 76584
+            },
+            "assumptions": [
+              "85% of observed latency is treated as parallelizable.",
+              "Combiner/cache/join multipliers are directional estimates, not benchmark measurements.",
+              "No queueing or worker contention is modeled."
+            ],
+            "confidence": "medium"
+          },
+          "measured": {
+            "jobId": "204f3353-7fc3-441b-9cbf-b4cfb7d90b6d",
+            "checksumMatch": true,
+            "baseline": {
+              "latencyMs": 100,
+              "bytes": 39600,
+              "cpuMicros": 266766,
+              "peakMemoryBytes": 5242880
+            },
+            "comparison": {
+              "latencyMs": 65,
+              "bytes": 39616,
+              "cpuMicros": 182413,
+              "peakMemoryBytes": 3862528
+            }
+          }
+        },
+        {
+          "jobId": "e5d72846-e645-469d-bc61-f9fa361f6ff1",
+          "projection": {
+            "model": "evidence-weighted Amdahl projection v1",
+            "baselineExecutionTimeMs": 55,
+            "predictedExecutionTimeMs": 43,
+            "predictedSpeedup": 1.282051282051282,
+            "inputs": {
+              "currentWorkers": 8,
+              "targetWorkers": 8,
+              "currentCombiner": true,
+              "targetCombiner": true,
+              "cacheWarm": true,
+              "targetJoinStrategy": null
+            },
+            "evidence": {
+              "winnerTasks": 8,
+              "measuredTransferBytes": 5392,
+              "measuredScanBytes": 76584
+            },
+            "assumptions": [
+              "85% of observed latency is treated as parallelizable.",
+              "Combiner/cache/join multipliers are directional estimates, not benchmark measurements.",
+              "No queueing or worker contention is modeled."
+            ],
+            "confidence": "medium"
+          },
+          "measured": {
+            "jobId": "69ddf39d-e3a9-4efc-bcb1-9d671d3108c5",
+            "checksumMatch": true,
+            "baseline": {
+              "latencyMs": 55,
+              "bytes": 5392,
+              "cpuMicros": 183095,
+              "peakMemoryBytes": 5955584
+            },
+            "comparison": {
+              "latencyMs": 60,
+              "bytes": 5392,
+              "cpuMicros": 163684,
+              "peakMemoryBytes": 2936832
+            }
+          }
+        }
+      ],
+      "measuredSpeedups": 4,
+      "workload": {
+        "id": "729ea21b-16a2-4553-864a-880ae926e244",
+        "replayId": "01e4d04d-f035-46ba-b11a-446d9e5982a1",
+        "checksumMatches": 5,
+        "results": [
+          {
+            "sequenceNumber": 0,
+            "jobId": "70b68f66-089f-4a14-8077-8dd25baeb007",
+            "checksumMatch": true,
+            "baselineLatencyMs": 297,
+            "replayLatencyMs": 49,
+            "latencyDelta": -0.835016835016835,
+            "baselineStrategy": "partition_scan",
+            "replayStrategy": "partition_scan",
+            "baselineResultRows": null,
+            "replayResultRows": 4
+          },
+          {
+            "sequenceNumber": 1,
+            "jobId": "23648ce4-8f85-4527-a529-77fd15a5c542",
+            "checksumMatch": true,
+            "baselineLatencyMs": 302,
+            "replayLatencyMs": 59,
+            "latencyDelta": -0.804635761589404,
+            "baselineStrategy": "partition_scan",
+            "replayStrategy": "partition_scan",
+            "baselineResultRows": null,
+            "replayResultRows": 50
+          },
+          {
+            "sequenceNumber": 2,
+            "jobId": "919e29d3-114c-482c-ab17-9efbd6a066bd",
+            "checksumMatch": true,
+            "baselineLatencyMs": 89,
+            "replayLatencyMs": 52,
+            "latencyDelta": -0.4157303370786517,
+            "baselineStrategy": "partition_scan",
+            "replayStrategy": "partition_scan",
+            "baselineResultRows": null,
+            "replayResultRows": 1
+          },
+          {
+            "sequenceNumber": 3,
+            "jobId": "0829e213-c3fa-4106-a190-3bbf2cdf8221",
+            "checksumMatch": true,
+            "baselineLatencyMs": 100,
+            "replayLatencyMs": 70,
+            "latencyDelta": -0.30000000000000004,
+            "baselineStrategy": "partition_scan",
+            "replayStrategy": "partition_scan",
+            "baselineResultRows": null,
+            "replayResultRows": 100
+          },
+          {
+            "sequenceNumber": 4,
+            "jobId": "1ce51ee5-ff4d-4a33-807b-afb721f34c4e",
+            "checksumMatch": true,
+            "baselineLatencyMs": 55,
+            "replayLatencyMs": 55,
+            "latencyDelta": 0,
+            "baselineStrategy": "partition_scan",
+            "replayStrategy": "partition_scan",
+            "baselineResultRows": null,
+            "replayResultRows": 4
+          }
+        ]
+      }
+    },
+    "streamingExactlyOnce": {
+      "status": "passed",
+      "queryId": "cc9d68c4-38f5-4dcc-8930-9a943e2eb2df",
+      "topic": "exactly_once_452522ba",
+      "committedInputEvents": 602,
+      "acceptedWindowEvents": 601,
+      "acceptedLateEvents": 1,
+      "lateEvents": 1,
+      "exactRevenue": 7186,
+      "expectedRevenue": 7186,
+      "duplicateOrLostEvents": 0,
+      "committedBatches": 4,
+      "durableOffsets": [
+        {
+          "query_id": "cc9d68c4-38f5-4dcc-8930-9a943e2eb2df",
+          "topic": "exactly_once_452522ba",
+          "partition": 0,
+          "next_offset": "602",
+          "updated_at": "2026-10-02T09:49:10.514Z"
+        }
+      ],
+      "hllConfiguredError": 0.008125,
+      "hllObservedMaxError": 0,
+      "cmsConfiguredError": 0.0013272860490522681,
+      "cmsObservedMaxError": 0,
+      "windows": {
+        "TUMBLE": {
+          "inputEvents": 601,
+          "acceptedWindowEvents": 601
+        },
+        "HOP": {
+          "inputEvents": 6,
+          "windowMemberships": 18,
+          "windows": 8,
+          "workerFailure": "worker-1 SIGKILL; committed by worker-03ac5da4345d"
+        },
+        "SESSION": {
+          "inputEvents": 4,
+          "sessions": 2,
+          "sessionCounts": [
+            2,
+            2
+          ],
+          "exactRevenue": 17
+        }
+      },
+      "materializedDatasetId": "57828eab-df6b-4205-88f0-b41595bcc554",
+      "materializedOutputEpoch": {
+        "0": "602"
+      },
+      "materializedReference": {
+        "windows": 12,
+        "revenue": 7186
+      },
+      "crash": "coordinator SIGKILL after Kafka publish; durable state/offset replay converged exactly"
     },
     "chaos": {
       "status": "passed",
@@ -826,7 +2233,7 @@
     },
     "coordinatorRestart": {
       "status": "passed",
-      "jobId": "423b437b-891a-49b2-b13f-3487ab36fa2f",
+      "jobId": "7ffcbb4f-26c1-4e6b-8e6a-cda8de634321",
       "checksum": "d916efcaafb0176a3ec8de3d7c34357ae5c9f97818f200725bed0b35d6faec64",
       "abandonedAttempts": 6,
       "totalAttempts": 9
